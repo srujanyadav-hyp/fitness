@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../domain/use_cases/determine_initial_route_use_case.dart';
 import '../cubit/splash_cubit.dart';
 import '../cubit/splash_state.dart';
@@ -161,9 +162,9 @@ class _SplashViewState extends State<_SplashView>
   void _handleState(BuildContext context, SplashState state) {
     switch (state) {
       case SplashNavigateToAuth():
-        context.go(AppRoutes.onboarding);
+        context.go(AppRoutes.onboarding); // onboarding → login wired in OnboardingScreen
       case SplashNavigateToHome():
-        context.go(AppRoutes.onboarding); // Replace with home route later
+        context.go(AppRoutes.login); // Replace with customer/owner home later
       case SplashAnimating():
         break;
     }
@@ -173,47 +174,52 @@ class _SplashViewState extends State<_SplashView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SplashCubit, SplashState>(
-      listener: _handleState,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: Stack(
-          children: [
-            // 1. Radial vignette overlay
-            const _VignetteOverlay(),
+    // Force dark theme: splash is a brand cinematic screen — always dark
+    // regardless of the device's system light/dark setting.
+    return Theme(
+      data: AppTheme.dark,
+      child: BlocListener<SplashCubit, SplashState>(
+        listener: _handleState,
+        child: Scaffold(
+          backgroundColor: AppColors.background,
+          body: Stack(
+            children: [
+              // 1. Radial vignette overlay
+              const _VignetteOverlay(),
 
-            // 2. Floating spark particles
-            const SparkParticles(),
+              // 2. Floating spark particles
+              const SparkParticles(),
 
-            // 3. Pulsing rings (centered behind logo)
-            const Center(child: PulseRings()),
+              // 3. Pulsing rings (centered behind logo)
+              const Center(child: PulseRings()),
 
-            // 4. Main content
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Logo row: bolt icon + wordmark
-                  _buildLogoRow(),
+              // 4. Main content
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Logo row: bolt icon + wordmark
+                    _buildLogoRow(),
 
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  // Tagline
-                  _buildTagline(),
-                ],
+                    // Tagline
+                    _buildTagline(),
+                  ],
+                ),
               ),
-            ),
 
-            // 5. Bottom loading bar
-            Positioned(
-              bottom: 48,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: LoadingBar(positionAnimation: _loadPos),
+              // 5. Bottom loading bar
+              Positioned(
+                bottom: 48,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: LoadingBar(positionAnimation: _loadPos),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
