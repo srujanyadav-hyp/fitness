@@ -20,6 +20,9 @@ class SignUpScreen extends StatelessWidget {
       data: AppTheme.dark,
       child: Scaffold(
         backgroundColor: AppColors.surface,
+        // Hero must stay full-screen. Keyboard offset is handled by
+        // SingleChildScrollView padding using viewInsets.bottom.
+        resizeToAvoidBottomInset: false,
         body: _SignUpBody(phone: phone),
       ),
     );

@@ -21,6 +21,8 @@ class OtpScreen extends StatelessWidget {
       data: AppTheme.dark,
       child: Scaffold(
         backgroundColor: AppColors.surface,
+        // OTP uses a custom numeric keypad — system keyboard never appears.
+        resizeToAvoidBottomInset: false,
         body: _OtpBody(phone: phone),
       ),
     );

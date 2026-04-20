@@ -54,9 +54,12 @@ class _LoginView extends StatelessWidget {
             // context.go(AppRoutes.customerHome);
           }
         },
-        child: const Scaffold(
+        child: Scaffold(
           backgroundColor: AppColors.background,
-          body: _LoginBody(),
+          // Universal fix: we handle keyboard offset ourselves via
+          // viewInsets.bottom so the hero image is never clipped.
+          resizeToAvoidBottomInset: false,
+          body: const _LoginBody(),
         ),
       ),
     );
@@ -85,6 +88,11 @@ class _LoginBodyState extends State<_LoginBody> {
 
   @override
   Widget build(BuildContext context) {
+    // viewInsets.bottom == keyboard height (0 when keyboard is hidden).
+    // We animate the card up by exactly that amount — no hardcoded pixels,
+    // so this works correctly on every screen size and form factor.
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
     return Stack(
       children: [
         // ── Hero background ───────────────────────────────────────────────
@@ -94,6 +102,8 @@ class _LoginBodyState extends State<_LoginBody> {
 
         // ── Content ───────────────────────────────────────────────────────
         SafeArea(
+          // bottom: false → we manage bottom space ourselves
+          bottom: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -106,10 +116,15 @@ class _LoginBodyState extends State<_LoginBody> {
 
               const Spacer(),
 
-              // Glass bottom sheet card
-              _PhoneCard(
-                phoneCtrl: _phoneCtrl,
-                phoneFocus: _phoneFocus,
+              // Animate upward as keyboard appears
+              AnimatedPadding(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOutCubic,
+                padding: EdgeInsets.only(bottom: keyboardHeight),
+                child: _PhoneCard(
+                  phoneCtrl: _phoneCtrl,
+                  phoneFocus: _phoneFocus,
+                ),
               ),
             ],
           ),

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitHub - Sign Up</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#a6cfbd",
+                        "surface-dim": "#101413",
+                        "on-surface": "#e0e3e1",
+                        "surface-tint": "#6edab4",
+                        "outline": "#87948d",
+                        "tertiary-container": "#ff9e86",
+                        "on-surface-variant": "#bdcac2",
+                        "on-tertiary-fixed": "#3c0700",
+                        "secondary-fixed": "#c2ecd9",
+                        "secondary": "#a6cfbd",
+                        "surface-bright": "#363a39",
+                        "surface-container-lowest": "#0b0f0e",
+                        "on-primary-fixed-variant": "#00513d",
+                        "inverse-on-surface": "#2d3130",
+                        "surface-container-highest": "#323634",
+                        "on-secondary": "#0f372a",
+                        "secondary-container": "#284e40",
+                        "error-container": "#93000a",
+                        "on-error": "#690005",
+                        "surface-variant": "#323634",
+                        "error": "#ffb4ab",
+                        "on-background": "#e0e3e1",
+                        "on-error-container": "#ffdad6",
+                        "surface": "#101413",
+                        "on-secondary-fixed-variant": "#284e40",
+                        "tertiary-fixed": "#ffdad2",
+                        "on-tertiary": "#591c0d",
+                        "on-secondary-fixed": "#002117",
+                        "tertiary": "#ffc6b8",
+                        "outline-variant": "#3d4944",
+                        "on-primary-container": "#00523e",
+                        "on-tertiary-fixed-variant": "#773220",
+                        "on-primary": "#003829",
+                        "primary": "#7ae6c0",
+                        "primary-fixed-dim": "#6edab4",
+                        "surface-container": "#1c201f",
+                        "surface-container-low": "#181c1b",
+                        "surface-container-high": "#272b2a",
+                        "on-tertiary-container": "#783322",
+                        "on-secondary-container": "#95beac",
+                        "primary-container": "#5dcaa5",
+                        "tertiary-fixed-dim": "#ffb4a2",
+                        "inverse-surface": "#e0e3e1",
+                        "primary-fixed": "#8af7cf",
+                        "background": "#101413",
+                        "on-primary-fixed": "#002117",
+                        "inverse-primary": "#006c52"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Lexend", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(16, 20, 19, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(135, 148, 141, 0.15);
+        }
+        
+        .input-glow:focus-within {
+            border-bottom-color: theme('colors.primary');
+            box-shadow: 0 4px 15px -3px rgba(122, 230, 192, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, theme('colors.primary'), theme('colors.primary-container'));
+            color: theme('colors.surface-container-lowest');
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(122, 230, 192, 0.4);
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(16, 20, 19, 0.2) 0%, rgba(16, 20, 19, 0.8) 50%, rgba(16, 20, 19, 1) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen flex flex-col antialiased relative">
+<!-- Top Half: Hero Image & Logo -->
+<div class="relative h-[397px] w-full shrink-0">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Premium high-end gym interior, dark dramatic lighting, moody atmosphere, heavy weights and sleek equipment in background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCj_YVguTu1ifYe8nQDzRvsE6VOodP_2EsTYRPaQSa9RO17YVe__bbdRUbs8CoAq8yniGFpb0RNq2C2yNSulkVkNtNHjINJPaMF1Dxci9niWcysKT9COqFD2Ey_2II6CwEa1dc_BaY3bJn98dmpzNgscHrq8SBPFbfzhvasJD25ibSOkZ9WLeEvILG4z9EIgusnxtwrgwNDmu1eexHGcsUxRifFjAYWi2iA44HwurU3c8AjYy9B039ku6iHXSnzCmnKj-OV5JR_7Ag');">
+</div>
+<div class="absolute inset-0 hero-gradient"></div>
+<!-- Logo Header -->
+<header class="absolute top-0 left-0 w-full px-6 py-6 z-10 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="font-headline italic font-black text-on-surface text-2xl tracking-tighter uppercase">FitHub</span>
+</header>
+</div>
+<!-- Bottom Half: Glassmorphism Sign Up Card -->
+<main class="flex-grow flex flex-col justify-end relative -mt-10 z-20">
+<div class="glass-card w-full rounded-t-3xl p-8 flex flex-col gap-6 shadow-[0_-10px_40px_rgba(11,15,14,0.8)] min-h-[530px]">
+<!-- Headers -->
+<div class="flex flex-col gap-2 mb-2">
+<h1 class="font-headline text-display-lg font-bold text-on-surface tracking-tight">Join FitHub</h1>
+<p class="font-body text-body-lg text-on-surface-variant">Create an account to start your fitness journey.</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-5">
+<!-- Full Name Input -->
+<div class="bg-surface-container-lowest rounded-t-lg border-b-2 border-outline-variant input-glow transition-all duration-300">
+<label class="block text-label-sm font-medium text-on-surface-variant px-4 pt-3 pb-1" for="fullName">Full Name</label>
+<input class="w-full bg-transparent border-none text-on-surface placeholder:text-outline focus:ring-0 px-4 pb-3 pt-1 font-body text-body-lg" id="fullName" placeholder="Enter your full name" type="text"/>
+</div>
+<!-- Mobile Input -->
+<div class="bg-surface-container-lowest rounded-t-lg border-b-2 border-outline-variant input-glow transition-all duration-300 flex items-end">
+<div class="flex items-center gap-2 px-4 pb-3 pt-1 shrink-0 text-on-surface">
+<img alt="India Flag" class="w-6 h-4 object-cover rounded-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBB7A2QWslzBoeiypwdSN2KVxT1jkdEVzAw-N_yRdmKSFYW7lew5tnULHR3ys6biK05hHE0SeH1ToKnNnSnMtmgMYl8nPDu-7eHCv4w_IwZJ2-sKVxDiG1kGV5no6kEB2-nVHPhApJemqNj_d5NjyNeOoJKz4iBGTmodCVEFD8dW3ci3RMVPfUwR7sFbtk8RoBYOMGwmZI_S7ZxrQ1ybB1CfyZYILY5FgXRHkys0SozMYZmGI1xdp80LSqliFBXp5Dp5t79_cEw9xE"/>
+<span class="font-body text-body-lg">+91</span>
+<div class="w-px h-6 bg-outline-variant mx-2"></div>
+</div>
+<div class="flex-grow w-full">
+<label class="block text-label-sm font-medium text-on-surface-variant pt-3 pb-1" for="mobile">Mobile Number</label>
+<input class="w-full bg-transparent border-none text-on-surface placeholder:text-outline focus:ring-0 px-0 pb-3 pt-1 font-body text-body-lg" id="mobile" placeholder="Enter mobile number" type="tel"/>
+</div>
+</div>
+<!-- Create Account Button -->
+<button class="btn-primary w-full py-4 rounded-xl font-headline font-bold text-lg mt-4 flex justify-center items-center gap-2" type="button">
+                    Create Account
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</form>
+<!-- Divider -->
+<div class="flex items-center gap-4 my-2">
+<div class="h-px bg-outline-variant flex-grow"></div>
+<span class="text-label-sm text-on-surface-variant font-body uppercase tracking-wider">or sign up with</span>
+<div class="h-px bg-outline-variant flex-grow"></div>
+</div>
+<!-- Social Button -->
+<button class="w-full py-3.5 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-colors flex justify-center items-center gap-3 text-on-surface font-body font-medium" type="button">
+<svg class="w-5 h-5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                Continue with Google
+            </button>
+<!-- Login Link -->
+<p class="text-center font-body text-body-lg text-on-surface-variant mt-2">
+                Already have an account? 
+                <a class="text-primary font-bold hover:text-primary-fixed-dim transition-colors ml-1" href="#">Login</a>
+</p>
+<!-- Footer Links -->
+<p class="text-center font-body text-[11px] text-outline mt-auto pt-6 opacity-70">
+                By creating an account, you agree to our 
+                <a class="underline hover:text-on-surface transition-colors" href="#">Terms of Service</a> &amp; 
+                <a class="underline hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+</p>
+</div>
+</main>
+</body></html>

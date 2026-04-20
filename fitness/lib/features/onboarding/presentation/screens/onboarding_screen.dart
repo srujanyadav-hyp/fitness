@@ -1,9 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/router/app_router.dart';
 import '../../domain/use_cases/get_onboarding_pages_use_case.dart';
 import '../cubit/onboarding_cubit.dart';
 import '../cubit/onboarding_state.dart';
@@ -54,8 +57,8 @@ class _OnboardingViewState extends State<_OnboardingView> {
 
   void _onNext(BuildContext context, OnboardingState state) {
     if (state.isLastPage) {
-      // TODO: navigate to auth/home once built
-      // context.go(AppRoutes.login);
+      // Last onboarding page → navigate to Login
+      context.go(AppRoutes.login);
     } else {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 420),
@@ -69,8 +72,11 @@ class _OnboardingViewState extends State<_OnboardingView> {
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, OnboardingState>(
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppColors.surface,
+        // Force dark theme: onboarding uses Kinetic Pulse — always dark.
+        return Theme(
+          data: AppTheme.dark,
+          child: Scaffold(
+            backgroundColor: AppColors.surface,
           body: Stack(
             children: [
               // ── Atmospheric background gradient ─────────────────────────
@@ -146,7 +152,8 @@ class _OnboardingViewState extends State<_OnboardingView> {
               ),
             ],
           ),
-        );
+        ), // Scaffold
+        ); // Theme
       },
     );
   }
