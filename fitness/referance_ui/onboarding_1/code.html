@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitHub Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800&amp;family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#003544",
+                        "surface-container": "#1e1e32",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "secondary-fixed": "#ffdad3",
+                        "on-surface-variant": "#e5beb6",
+                        "surface-tint": "#ffb4a5",
+                        "on-tertiary-fixed": "#001f29",
+                        "inverse-primary": "#ba1b00",
+                        "on-secondary": "#630f03",
+                        "tertiary-fixed": "#baeaff",
+                        "secondary-container": "#832616",
+                        "outline": "#ac8982",
+                        "surface-bright": "#37374d",
+                        "surface": "#111125",
+                        "inverse-on-surface": "#2f2e43",
+                        "on-error": "#690005",
+                        "outline-variant": "#5c403a",
+                        "on-tertiary-fixed-variant": "#004d62",
+                        "surface-container-high": "#28283d",
+                        "on-background": "#e2e0fc",
+                        "surface-container-low": "#1a1a2e",
+                        "on-secondary-container": "#ff9a86",
+                        "surface-variant": "#333348",
+                        "secondary-fixed-dim": "#ffb4a5",
+                        "primary-container": "#ff5637",
+                        "inverse-surface": "#e2e0fc",
+                        "tertiary-fixed-dim": "#64d4fc",
+                        "surface-dim": "#111125",
+                        "on-secondary-fixed-variant": "#832616",
+                        "on-primary": "#650a00",
+                        "tertiary": "#64d4fc",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#002e3c",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#333348",
+                        "primary": "#ffb4a5",
+                        "on-surface": "#e2e0fc",
+                        "background": "#111125",
+                        "on-primary-container": "#590800",
+                        "surface-container-lowest": "#0c0c1f",
+                        "primary-fixed": "#ffdad3",
+                        "on-primary-fixed-variant": "#8e1300",
+                        "on-primary-fixed": "#3f0400",
+                        "on-secondary-fixed": "#3f0400",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#0e9dc3",
+                        "secondary": "#ffb4a5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Lexend"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .headline-lg { font-size: 2rem; line-height: 2.5rem; }
+        .body-md { font-size: 1rem; line-height: 1.5rem; }
+        .label-md { font-size: 0.875rem; line-height: 1.25rem; letter-spacing: 0.025em; font-weight: 500; }
+        .display-lg { font-size: 3rem; line-height: 1; }
+        
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(51, 51, 72, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* Sonar Animation */
+        @keyframes sonar-pulse {
+            0% { transform: scale(0.5); opacity: 0.08; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .sonar-wave {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid #FF4D2E;
+            animation: sonar-pulse 4s linear infinite;
+        }
+        .sonar-wave:nth-child(2) {
+            animation-delay: 1.33s;
+        }
+        .sonar-wave:nth-child(3) {
+            animation-delay: 2.66s;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- Top App Bar (From Shared Components JSON) -->
+<header class="flex justify-end items-center w-full px-6 py-4 bg-surface docked full-width top-0">
+<button class="text-on-surface-variant opacity-60 font-label label-md uppercase tracking-widest hover:text-primary-container transition-colors active:scale-95 duration-200">
+            Skip
+        </button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col justify-center items-center px-6 md:px-12 relative z-10 pb-24">
+<!-- Illustration Container -->
+<div class="w-full max-w-md aspect-square mb-12 relative flex items-center justify-center">
+<!-- Sonar Background Animation -->
+<div class="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
+<div class="sonar-wave"></div>
+<div class="sonar-wave"></div>
+<div class="sonar-wave"></div>
+</div>
+<!-- Decorative background glow -->
+<div class="absolute inset-0 bg-primary-container/10 rounded-full blur-[80px]"></div>
+<!-- Map Illustration (Placeholder with descriptive alt) -->
+<img alt="Flat modern minimal line art illustration of a dark stylized city map with bright orange glowing gym location pins around a central user location dot, set against a dark charcoal background" class="w-full h-full object-cover rounded-full shadow-2xl relative z-10 mix-blend-luminosity opacity-80" data-alt="Flat modern minimal line art illustration of a dark stylized city map with bright orange glowing gym location pins around a central user location dot, set against a dark charcoal background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm8Ymo5B1DKDqDxdorUiMq9wCTcKrZJxZpircO3QLxgq_rlLTrLdN7-bWY7vvMDxel3H0Ag8pjbeD8GGiF214wLQyr9EayqOfDhAJN2GybOFbwoKxqDLMQ1wrRs4DKGQ1S5cSSH05ajph2MdMmhzjba3Ml0EV7C7ZURRzAS_o66Vjjgb4cHSjyiG_dHY1SX8saKFX6uHjAMBQ_24Ge6vfJKqlXz7Pn90KjlqRpOHNDbyywt5kQtEAoS1w3_aYzPw7wRkTUX6mXYQw" style="mask-image: radial-gradient(circle, black 60%, transparent 100%); -webkit-mask-image: radial-gradient(circle, black 60%, transparent 100%);"/>
+<!-- Floating Elements to simulate the map UI -->
+<div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+<!-- User Location -->
+<div class="w-4 h-4 bg-tertiary rounded-full shadow-[0_0_15px_rgba(100,212,252,0.8)] border-2 border-surface"></div>
+<!-- Gym Pins -->
+<div class="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
+<span class="material-symbols-outlined text-primary-container text-3xl drop-shadow-[0_0_10px_rgba(255,86,55,0.6)]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute bottom-1/3 right-1/4 transform translate-x-1/2 translate-y-1/2">
+<span class="material-symbols-outlined text-primary-container text-4xl drop-shadow-[0_0_10px_rgba(255,86,55,0.6)]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute top-1/3 right-1/3 transform translate-x-1/2 -translate-y-1/2 opacity-60">
+<span class="material-symbols-outlined text-primary-container text-2xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+<!-- Typography Section -->
+<div class="text-center max-w-lg mx-auto z-20">
+<h1 class="font-headline headline-lg font-extrabold tracking-tight text-on-surface mb-4">
+                Find gyms near you instantly.
+            </h1>
+<p class="font-body body-md text-on-surface-variant max-w-sm mx-auto">
+                Discover hundreds of gyms, studios and fitness centres around you.
+            </p>
+</div>
+</main>
+<!-- Bottom Navigation / Controls -->
+<footer class="fixed bottom-0 w-full px-8 py-8 md:py-12 flex justify-between items-center z-50 glass-panel border-t border-outline-variant/15">
+<!-- Pagination Dots -->
+<div class="flex space-x-2 items-center">
+<div class="w-8 h-2 rounded-full bg-primary-container"></div>
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+</div>
+<!-- Next Button -->
+<button class="bg-primary-container text-on-primary-container font-label label-md uppercase tracking-widest px-8 py-4 rounded-md hover:bg-primary transition-colors active:scale-95 duration-200 flex items-center gap-2 shadow-[0_16px_32px_rgba(226,224,252,0.06)]">
+            Next
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</footer>
+</body></html>
