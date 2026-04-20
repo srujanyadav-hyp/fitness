@@ -30,7 +30,9 @@ class FitHubApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'FitHub',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
+      theme:      AppTheme.light,
+      darkTheme:  AppTheme.dark,
+      themeMode:  ThemeMode.system, // follows device light/dark setting
       routerConfig: appRouter,
     );
   }
