@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -40,9 +41,10 @@ class _OtpBody extends StatefulWidget {
 }
 
 class _OtpBodyState extends State<_OtpBody> {
-  // 4 digit controllers + focus nodes
-  final _ctrls = List.generate(4, (_) => TextEditingController());
-  final _foci = List.generate(4, (_) => FocusNode());
+  // Firebase OTP is always 6 digits
+  static const _digits = 6;
+  final _ctrls = List.generate(_digits, (_) => TextEditingController());
+  final _foci  = List.generate(_digits, (_) => FocusNode());
 
   // Resend countdown
   static const _resendSeconds = 30;
@@ -82,19 +84,19 @@ class _OtpBodyState extends State<_OtpBody> {
   String get _otp => _ctrls.map((c) => c.text).join();
 
   void _onDigit(String digit) {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < _digits; i++) {
       if (_ctrls[i].text.isEmpty) {
         _ctrls[i].text = digit;
         setState(() {});
-        if (i < 3) _foci[i + 1].requestFocus();
-        if (i == 3) _submit();
+        if (i < _digits - 1) _foci[i + 1].requestFocus();
+        if (i == _digits - 1) _submit();
         return;
       }
     }
   }
 
   void _onBackspace() {
-    for (int i = 3; i >= 0; i--) {
+    for (int i = _digits - 1; i >= 0; i--) {
       if (_ctrls[i].text.isNotEmpty) {
         _ctrls[i].text = '';
         setState(() {});
@@ -105,7 +107,7 @@ class _OtpBodyState extends State<_OtpBody> {
   }
 
   void _submit() {
-    if (_otp.length == 4) {
+    if (_otp.length == _digits) {
       context.read<AuthCubit>().verifyOtp(_otp);
     }
   }
@@ -119,10 +121,20 @@ class _OtpBodyState extends State<_OtpBody> {
             SnackBar(
               content: Text(state.message),
               backgroundColor: AppColors.darkSemantic.error,
+              behavior: SnackBarBehavior.floating,
             ),
           );
+        } else if (state is AuthSignUpRequired) {
+          // New user → sign-up screen (same AuthCubit scope via extra)
+          context.push(
+            '/login/signup?phone=${Uri.encodeComponent(state.phone)}',
+          );
+        } else if (state is AuthSuccess) {
+          // Existing user → redirect guard picks the right shell
+          context.go(
+            state.role == 'owner' ? '/owner' : '/customer',
+          );
         }
-        // AuthSuccess / AuthSignUpRequired → handled by GoRouter redirect
       },
       child: SafeArea(
         child: Column(
@@ -164,9 +176,12 @@ class _OtpBodyState extends State<_OtpBody> {
                     _ResendRow(
                       secondsLeft: _secondsLeft,
                       onResend: () {
-                        context.read<AuthCubit>().sendOtp(widget.phone
-                            .replaceAll(RegExp(r'\D'), '')
-                            .substring(2));
+                        // Strip country code (+91 or leading 91) for sendOtp
+                        final digits = widget.phone.replaceAll(RegExp(r'\D'), '');
+                        final local = digits.length > 10
+                            ? digits.substring(digits.length - 10)
+                            : digits;
+                        context.read<AuthCubit>().sendOtp(local);
                         _startTimer();
                       },
                     ),
@@ -232,7 +247,7 @@ class _PhoneSubtitle extends StatelessWidget {
             style: GoogleFonts.manrope(
                 color: AppColors.onSurfaceVariant, fontSize: 15),
             children: [
-              const TextSpan(text: "We've sent a 4-digit code to\n"),
+              const TextSpan(text: "We've sent a 6-digit code to\n"),
               TextSpan(
                 text: phone,
                 style: GoogleFonts.manrope(
@@ -256,7 +271,7 @@ class _PhoneSubtitle extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// The four OTP digit boxes
+// The six OTP digit boxes
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _OtpBoxRow extends StatelessWidget {
@@ -266,10 +281,16 @@ class _OtpBoxRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 6 Expanded boxes with equal gaps — fits any screen size
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children:
-          List.generate(4, (i) => _OtpBox(ctrl: ctrls[i], focus: foci[i])),
+      children: List.generate(6, (i) {
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: i < 5 ? 8 : 0),
+            child: _OtpBox(ctrl: ctrls[i], focus: foci[i]),
+          ),
+        );
+      }),
     );
   }
 }
@@ -302,13 +323,13 @@ class _OtpBoxState extends State<_OtpBox> {
     final filled = widget.ctrl.text.isNotEmpty;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      width: 72,
-      height: 84,
+      // No fixed width — parent Expanded controls size
+      height: 56,
       decoration: BoxDecoration(
         color: _focused
             ? AppColors.surfaceContainerHigh
             : AppColors.surfaceContainer,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: _focused ? AppColors.primary : Colors.transparent,
           width: 2,
@@ -328,7 +349,7 @@ class _OtpBoxState extends State<_OtpBox> {
         style: GoogleFonts.lexend(
           color: _focused ? AppColors.primary : AppColors.onSurface,
           fontWeight: FontWeight.w600,
-          fontSize: 30,
+          fontSize: 22,
         ),
       ),
     );

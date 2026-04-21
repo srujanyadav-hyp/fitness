@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Customer Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#28283d",
+                        "inverse-surface": "#e2e0fc",
+                        "on-background": "#e2e0fc",
+                        "on-primary-fixed": "#3f0400",
+                        "secondary-fixed-dim": "#ffb4a5",
+                        "inverse-primary": "#ba1b00",
+                        "tertiary-fixed-dim": "#64d4fc",
+                        "outline-variant": "#5c403a",
+                        "on-tertiary-container": "#002e3c",
+                        "error": "#ffb4ab",
+                        "primary-container": "#ff5637",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdad3",
+                        "on-primary": "#650a00",
+                        "background": "#111125",
+                        "on-tertiary": "#003544",
+                        "secondary": "#ffb4a5",
+                        "on-primary-fixed-variant": "#8e1300",
+                        "on-primary-container": "#590800",
+                        "surface-dim": "#111125",
+                        "surface-container-low": "#1a1a2e",
+                        "inverse-on-surface": "#2f2e43",
+                        "secondary-fixed": "#ffdad3",
+                        "surface": "#111125",
+                        "primary": "#ffb4a5",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "error-container": "#93000a",
+                        "outline": "#ac8982",
+                        "on-tertiary-fixed-variant": "#004d62",
+                        "surface-variant": "#333348",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#e5beb6",
+                        "on-secondary-fixed-variant": "#832616",
+                        "on-secondary": "#630f03",
+                        "on-secondary-container": "#ff9a86",
+                        "on-tertiary-fixed": "#001f29",
+                        "tertiary-fixed": "#baeaff",
+                        "surface-container-highest": "#333348",
+                        "on-secondary-fixed": "#3f0400",
+                        "tertiary-container": "#0e9dc3",
+                        "surface-container": "#1e1e32",
+                        "on-surface": "#e2e0fc",
+                        "tertiary": "#64d4fc",
+                        "surface-tint": "#ffb4a5",
+                        "surface-container-lowest": "#0c0c1f",
+                        "surface-bright": "#37374d",
+                        "secondary-container": "#832616"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    fontFamily: {
+                        "headline": ["Lexend", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Lexend', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col pb-24">
+<!-- Top Navigation (Transactional intent, hide Bottom NavBar, simplified TopNav) -->
+<header class="flex justify-between items-center px-6 py-4 w-full h-16 bg-surface z-10 sticky top-0">
+<button class="text-primary p-2 -ml-2 rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight font-headline text-on-surface">Complete Profile</h1>
+<button class="text-xs tracking-widest font-label text-primary hover:text-primary-container transition-colors uppercase">Skip</button>
+</header>
+<!-- Progress Pulse -->
+<div class="px-6 py-2 w-full">
+<div class="h-1 bg-surface-container rounded-full overflow-hidden w-full relative">
+<div class="absolute top-0 left-0 h-full bg-tertiary w-[40%] rounded-full shadow-[0_0_8px_rgba(100,212,252,0.6)]"></div>
+</div>
+</div>
+<main class="flex-grow px-6 py-8 space-y-12 max-w-2xl mx-auto w-full">
+<!-- About You Section -->
+<section class="space-y-6 bg-surface-container-low rounded-xl p-6 relative overflow-hidden">
+<!-- Atmospheric glow -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary-container/10 blur-[60px] rounded-full pointer-events-none"></div>
+<h2 class="text-2xl font-bold font-headline tracking-tight -tracking-[0.02em]">About You</h2>
+<div class="flex flex-col items-center gap-4 mb-8">
+<div class="w-24 h-24 rounded-full bg-surface-container-highest border border-outline-variant/15 flex items-center justify-center relative group cursor-pointer overflow-hidden">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:scale-110 transition-transform duration-300" data-icon="add_a_photo">add_a_photo</span>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-xs font-semibold tracking-wide">UPLOAD</span>
+</div>
+</div>
+</div>
+<div class="space-y-5">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold tracking-widest text-on-surface-variant uppercase font-label">Full Name</label>
+<input class="w-full bg-surface-container-highest text-on-surface border border-outline-variant/15 rounded-xl px-4 py-3.5 focus:outline-none focus:bg-surface-bright focus:border-primary/40 focus:ring-0 transition-colors placeholder:text-on-surface-variant/50 font-body" placeholder="Enter your full name" type="text" value="Alex Mercer"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-xs font-semibold tracking-widest text-on-surface-variant uppercase font-label">DOB</label>
+<input class="w-full bg-surface-container-highest text-on-surface border border-outline-variant/15 rounded-xl px-4 py-3.5 focus:outline-none focus:bg-surface-bright focus:border-primary/40 focus:ring-0 transition-colors font-body [color-scheme:dark]" type="date" value="1992-08-15"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold tracking-widest text-on-surface-variant uppercase font-label">Gender</label>
+<select class="w-full bg-surface-container-highest text-on-surface border border-outline-variant/15 rounded-xl px-4 py-3.5 focus:outline-none focus:bg-surface-bright focus:border-primary/40 focus:ring-0 transition-colors font-body appearance-none">
+<option>Male</option>
+<option>Female</option>
+<option>Non-binary</option>
+<option>Prefer not to say</option>
+</select>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-semibold tracking-widest text-on-surface-variant uppercase font-label">Your City</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest text-on-surface border border-outline-variant/15 rounded-xl pl-10 pr-4 py-3.5 focus:outline-none focus:bg-surface-bright focus:border-primary/40 focus:ring-0 transition-colors font-body" placeholder="Search city" type="text" value="Mumbai"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/70 text-[20px]" data-icon="location_on">location_on</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Fitness Goals Section -->
+<section class="space-y-6">
+<h2 class="text-2xl font-bold font-headline tracking-tight -tracking-[0.02em] px-2">Fitness Goals</h2>
+<div class="space-y-8 bg-surface-container-low rounded-xl p-6">
+<!-- Main Goal -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold tracking-wide text-on-surface-variant font-label uppercase">Main Goal</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">Weight Loss</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-sm font-medium border border-transparent shadow-[0_0_12px_rgba(255,86,55,0.2)] font-body">Build Muscle</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">Endurance</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">Flexibility</button>
+</div>
+</div>
+<!-- Fitness Level -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold tracking-wide text-on-surface-variant font-label uppercase">Fitness Level</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-sm font-medium border border-transparent shadow-[0_0_12px_rgba(255,86,55,0.2)] font-body">Beginner</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">Intermediate</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">Advanced</button>
+</div>
+</div>
+<!-- Best Time -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold tracking-wide text-on-surface-variant font-label uppercase">Best Time</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="wb_twilight">wb_twilight</span> Morning</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="light_mode">light_mode</span> Afternoon</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-sm font-medium border border-transparent shadow-[0_0_12px_rgba(255,86,55,0.2)] font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="dark_mode">dark_mode</span> Evening</button>
+</div>
+</div>
+<!-- Monthly Budget -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold tracking-wide text-on-surface-variant font-label uppercase">Monthly Budget (₹)</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">&lt; 500</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-sm font-medium border border-transparent shadow-[0_0_12px_rgba(255,86,55,0.2)] font-body">500-1500</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">1500-3000</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body">3000+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Interests Section -->
+<section class="space-y-6">
+<h2 class="text-2xl font-bold font-headline tracking-tight -tracking-[0.02em] px-2">Interests</h2>
+<div class="bg-surface-container-low rounded-xl p-6">
+<div class="flex flex-wrap gap-2.5">
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-sm font-medium border border-transparent shadow-[0_0_12px_rgba(255,86,55,0.2)] font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="self_improvement">self_improvement</span> Yoga</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="fitness_center">fitness_center</span> Weightlifting</button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-xl text-sm font-medium border border-transparent shadow-[0_0_12px_rgba(255,86,55,0.2)] font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="directions_run">directions_run</span> CrossFit</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="pool">pool</span> Swimming</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="sports_martial_arts">sports_martial_arts</span> Boxing</button>
+<button class="px-4 py-2 bg-surface-variant border border-outline-variant/15 rounded-xl text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors font-body flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px]" data-icon="pedal_bike">pedal_bike</span> Cycling</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom CTA -->
+<div class="fixed bottom-0 left-0 w-full p-4 bg-surface/80 backdrop-blur-xl border-t border-outline-variant/10 z-50 flex justify-center">
+<button class="w-full max-w-2xl bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-headline font-bold text-lg rounded-xl py-4 px-8 shadow-[0_8px_32px_rgba(255,86,55,0.3)] hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+            Save &amp; Continue
+            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</body></html>

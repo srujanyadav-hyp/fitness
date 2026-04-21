@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -162,12 +163,21 @@ class _SplashViewState extends State<_SplashView>
   void _handleState(BuildContext context, SplashState state) {
     switch (state) {
       case SplashNavigateToAuth():
-        context.go(AppRoutes.onboarding); // onboarding → login wired in OnboardingScreen
+        context.go(AppRoutes.onboarding);
       case SplashNavigateToHome():
-        context.go(AppRoutes.login); // Replace with customer/owner home later
+        _routeToHome(context);
       case SplashAnimating():
         break;
     }
+  }
+
+  Future<void> _routeToHome(BuildContext context) async {
+    // Capture router before the async gap.
+    final router = GoRouter.of(context);
+    const storage = _PrefReader();
+    final role = await storage.role();
+    if (!mounted) return;
+    router.go(role == 'owner' ? '/owner' : '/customer');
   }
 
   // ── Build ─────────────────────────────────────────────────────────────────
@@ -323,5 +333,16 @@ class _VignetteOverlay extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// ── Thin SharedPreferences reader (keeps the splash screen self-contained) ─
+
+class _PrefReader {
+  const _PrefReader();
+
+  Future<String> role() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_role') ?? 'customer';
   }
 }

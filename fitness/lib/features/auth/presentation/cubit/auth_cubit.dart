@@ -1,17 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/repositories/auth_repository.dart';
 import 'auth_state.dart';
 
 /// Manages the entire authentication flow:
 /// Login → OTP → (Sign-up if needed) → Role routing.
 ///
-/// NOTE: All network calls are stubbed with [Future.delayed] for now.
-/// Replace the stubs with real API calls when the backend is ready.
+/// All network calls delegate to [AuthRepository].
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(const AuthInitial());
+  AuthCubit({required AuthRepository repository})
+      : _repo = repository,
+        super(const AuthInitial());
 
+  final AuthRepository _repo;
   String _phone = '';
 
-  // ── Step 1: send OTP ───────────────────────────────────────────────────────
+  // ── Step 1: Send OTP ───────────────────────────────────────────────────────
 
   Future<void> sendOtp(String phone) async {
     _phone = phone.trim();
@@ -20,43 +24,74 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
     emit(const AuthLoading());
-    // TODO: replace with real OTP API call
-    await Future<void>.delayed(const Duration(seconds: 1));
-    emit(AuthOtpSent(phone: '+91 $_phone'));
+    try {
+      await _repo.sendOtp(_phone);
+      emit(AuthOtpSent(phone: '+91 $_phone'));
+    } on AuthException catch (e) {
+      emit(AuthFailure(message: e.message));
+    } catch (_) {
+      emit(const AuthFailure(message: 'Could not send OTP. Please try again.'));
+    }
   }
 
-  // ── Step 2: verify OTP ─────────────────────────────────────────────────────
+  // ── Step 2: Verify OTP ─────────────────────────────────────────────────────
 
   Future<void> verifyOtp(String otp) async {
-    emit(const AuthLoading());
-    // TODO: replace with real OTP verification API call
-    await Future<void>.delayed(const Duration(seconds: 1));
-
-    // Stub: "0000" simulates a brand-new user → show sign-up form.
-    if (otp == '0000') {
-      emit(AuthSignUpRequired(phone: _phone));
+    if (otp.length < 6) {
+      emit(const AuthFailure(message: 'Enter the complete 6-digit OTP.'));
       return;
     }
-
-    // Any other OTP → treated as existing user with role "customer".
-    emit(const AuthSuccess(role: 'customer'));
+    emit(const AuthLoading());
+    try {
+      final user = await _repo.verifyOtp(otp);
+      if (user == null) {
+        // New user — show sign-up screen.
+        emit(AuthSignUpRequired(phone: _phone));
+      } else {
+        emit(AuthSuccess(role: user.role));
+      }
+    } on AuthException catch (e) {
+      emit(AuthFailure(message: e.message));
+    } catch (_) {
+      emit(const AuthFailure(message: 'OTP verification failed. Please try again.'));
+    }
   }
 
-  // ── Step 3 (new users): create account ─────────────────────────────────────
+  // ── Step 3 (new users): Create account ─────────────────────────────────────
 
   Future<void> createAccount({
     required String name,
     required String phone,
+    required String role,
   }) async {
+    if (name.trim().isEmpty) {
+      emit(const AuthFailure(message: 'Please enter your full name.'));
+      return;
+    }
     emit(const AuthLoading());
-    // TODO: replace with real sign-up API call
-    await Future<void>.delayed(const Duration(seconds: 1));
-    emit(const AuthSuccess(role: 'customer'));
+    try {
+      final user = await _repo.createAccount(
+        name: name.trim(),
+        phone: phone,
+        role: role,
+      );
+      emit(AuthSuccess(role: user.role));
+    } on AuthException catch (e) {
+      emit(AuthFailure(message: e.message));
+    } catch (_) {
+      emit(const AuthFailure(message: 'Account creation failed. Please try again.'));
+    }
   }
 
-  /// Allow screens to re-show the login form.
+  /// Signs out and resets to initial state.
+  Future<void> signOut() async {
+    await _repo.signOut();
+    emit(const AuthInitial());
+  }
+
+  /// Allow screens to re-show the login form (e.g. "edit number" button).
   void reset() => emit(const AuthInitial());
 
-  /// Expose the current phone (used to pre-fill the OTP subtitle).
+  /// Expose current phone for OTP screen subtitle.
   String get currentPhone => '+91 $_phone';
 }

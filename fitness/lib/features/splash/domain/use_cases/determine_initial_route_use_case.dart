@@ -1,26 +1,32 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 /// Domain-layer use case: decides where the app should navigate after
 /// the splash screen completes its animation.
 ///
-/// Pure Dart — zero Flutter / external dependencies.
-/// Returns a [SplashDestination] enum so the Presentation layer can act.
+/// Reads the SharedPreferences cache written by [FirebaseAuthRepository]
+/// on login. No network call — instant decision.
 enum SplashDestination {
-  /// User is not authenticated → show login / onboarding.
+  /// User is not authenticated → show onboarding / login.
   auth,
 
-  /// User is already logged in → show home dashboard.
+  /// User is already logged in → show their role-based home shell.
   home,
 }
 
 class DetermineInitialRouteUseCase {
   const DetermineInitialRouteUseCase();
 
-  /// Call this after the splash animation finishes.
-  /// Inject auth-repository later; for now it always routes to [auth].
+  /// Returns [SplashDestination.home] if a cached auth session exists
+  /// in SharedPreferences, otherwise [SplashDestination.auth].
   Future<SplashDestination> call() async {
-    // TODO: replace with real auth-check from an injected repository.
-    // e.g.  final isLoggedIn = await _authRepo.isLoggedIn();
-    //       return isLoggedIn ? SplashDestination.home : SplashDestination.auth;
-    await Future<void>.delayed(const Duration(milliseconds: 3000));
-    return SplashDestination.auth;
+    // Keep the minimum splash duration for branding.
+    await Future<void>.delayed(const Duration(milliseconds: 1800));
+
+    final prefs = await SharedPreferences.getInstance();
+    final uid = prefs.getString('auth_uid');
+
+    return (uid != null && uid.isNotEmpty)
+        ? SplashDestination.home
+        : SplashDestination.auth;
   }
 }
