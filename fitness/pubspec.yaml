@@ -22,6 +22,7 @@ dependencies:
 
   # Fonts
   google_fonts: ^6.2.1
+  firebase_core: ^4.7.0
 
 dev_dependencies:
   flutter_test:
