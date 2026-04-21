@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/data/repositories/firebase_auth_repository.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/auth/presentation/screens/complete_profile/complete_profile_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_screen.dart';
 import '../../features/auth/presentation/screens/signup_screen.dart';
@@ -32,7 +35,12 @@ abstract final class AppRoutes {
 // Singleton repository + cubit — shared across the whole auth flow
 // ─────────────────────────────────────────────────────────────────────────────
 
-final AuthRepository _authRepo = FirebaseAuthRepository();
+final AuthRepository _authRepo = FirebaseAuthRepository(
+  firestore: FirebaseFirestore.instanceFor(
+    app: Firebase.app(),
+    databaseId: 'fitness',
+  ),
+);
 final AuthCubit _authCubit = AuthCubit(repository: _authRepo);
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -86,6 +94,23 @@ final appRouter = GoRouter(
               child: SignUpScreen(phone: phone),
             );
           },
+          routes: [
+            // /login/signup/profile — role-specific CompleteProfileScreen
+            GoRoute(
+              path: 'profile',
+              builder: (context, state) {
+                final extra = (state.extra as Map<String, dynamic>?) ?? {};
+                return BlocProvider<AuthCubit>.value(
+                  value: _authCubit,
+                  child: CompleteProfileScreen(
+                    phone: extra['phone'] as String? ?? '',
+                    name:  extra['name']  as String? ?? '',
+                    role:  extra['role']  as String? ?? 'customer',
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ],
     ),

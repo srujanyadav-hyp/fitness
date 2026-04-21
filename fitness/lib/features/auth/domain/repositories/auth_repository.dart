@@ -17,10 +17,12 @@ abstract class AuthRepository {
   Future<AuthUser?> verifyOtp(String otp);
 
   /// Creates a new user document in Firestore after sign-up.
+  /// [profileData] carries role-specific fields (DOB, gym name, interests, etc.).
   Future<AuthUser> createAccount({
     required String name,
     required String phone,
     required String role,
+    Map<String, dynamic> profileData,
   });
 
   /// Signs out and clears local cache.

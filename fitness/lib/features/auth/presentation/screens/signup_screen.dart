@@ -69,9 +69,9 @@ class _SignUpBodyState extends State<_SignUpBody> {
               behavior: SnackBarBehavior.floating,
             ),
           );
-        } else if (state is AuthSuccess) {
-          context.go(state.role == 'owner' ? '/owner' : '/customer');
         }
+        // AuthSuccess is handled by the CompleteProfileScreen after
+        // createAccount() is called there — this screen only picks role.
       },
       child: Stack(
         fit: StackFit.expand, // Prevents row overflow by forcing full width
@@ -106,6 +106,28 @@ class _SignUpBodyState extends State<_SignUpBody> {
               nameFocus: _nameFocus,
               selectedRole: _selectedRole,
               onRoleChanged: (r) => setState(() => _selectedRole = r),
+              onContinue: () {
+                // Validate name before proceeding
+                if (_nameCtrl.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Please enter your full name.'),
+                      backgroundColor: AppColors.darkSemantic.error,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                  return;
+                }
+                // Navigate to complete-profile with name + role + phone
+                context.push(
+                  '/login/signup/profile',
+                  extra: {
+                    'phone': widget.phone,
+                    'name': _nameCtrl.text.trim(),
+                    'role': _selectedRole,
+                  },
+                );
+              },
             ),
           ),
         ],
@@ -211,6 +233,7 @@ class _SignUpCard extends StatelessWidget {
     required this.nameFocus,
     required this.selectedRole,
     required this.onRoleChanged,
+    required this.onContinue,
   });
 
   final String phone;
@@ -218,6 +241,7 @@ class _SignUpCard extends StatelessWidget {
   final FocusNode nameFocus;
   final String selectedRole;
   final ValueChanged<String> onRoleChanged;
+  final VoidCallback onContinue;
 
   @override
   Widget build(BuildContext context) {
@@ -298,11 +322,7 @@ class _SignUpCard extends StatelessWidget {
               const SizedBox(height: 40),
 
               // ── CTA & Legal ──
-              _CreateAccountButton(
-                nameCtrl: nameCtrl,
-                phone: phone,
-                role: selectedRole,
-              ),
+              _ContinueButton(onTap: onContinue),
               const SizedBox(height: 24),
               Center(
                 child: Text.rich(
@@ -620,89 +640,59 @@ class _PremiumRoleSelector extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Epic Gradient Create Engine Button
+// Continue Button — navigates to CompleteProfileScreen
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _CreateAccountButton extends StatelessWidget {
-  const _CreateAccountButton({
-    required this.nameCtrl,
-    required this.phone,
-    required this.role,
-  });
-
-  final TextEditingController nameCtrl;
-  final String phone;
-  final String role;
+class _ContinueButton extends StatelessWidget {
+  const _ContinueButton({required this.onTap});
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, state) {
-        final loading = state is AuthLoading;
-        return GestureDetector(
-          onTap: loading
-              ? null
-              : () => context.read<AuthCubit>().createAccount(
-                    name: nameCtrl.text.trim(),
-                    phone: phone,
-                    role: role,
-                  ),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 60,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primary, AppColors.primaryContainer],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.35),
-                  blurRadius: 25,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: loading
-                ? const Center(
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Launch FitHub',
-                        style: GoogleFonts.lexend(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 18,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.25),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.arrow_forward_rounded,
-                            color: Colors.white, size: 16),
-                      ),
-                    ],
-                  ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 60,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.primary, AppColors.primaryContainer],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        );
-      },
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.35),
+              blurRadius: 25,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Set Up My Profile',
+              style: GoogleFonts.lexend(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.25),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.arrow_forward_rounded,
+                  color: Colors.white, size: 16),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
