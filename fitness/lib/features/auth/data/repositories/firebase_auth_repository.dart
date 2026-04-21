@@ -120,6 +120,9 @@ class FirebaseAuthRepository implements AuthRepository {
       }
     } on FirebaseAuthException catch (e) {
       throw AuthException(_mapFirebaseError(e));
+    } on FirebaseException catch (e) {
+      // Typically Firestore permission or network errors
+      throw AuthException('Database error: ${e.message ?? e.code}');
     }
   }
 
@@ -130,6 +133,7 @@ class FirebaseAuthRepository implements AuthRepository {
     required String name,
     required String phone,
     required String role,
+    Map<String, dynamic> profileData = const {},
   }) async {
     final firebaseUser = _auth.currentUser;
     if (firebaseUser == null) {
@@ -144,11 +148,16 @@ class FirebaseAuthRepository implements AuthRepository {
       createdAt: DateTime.now(),
     );
 
-    // Write to Firestore.
+    // Merge base fields + extended profile data in a single Firestore write.
+    final firestoreData = {
+      ...userModel.toFirestore(),
+      ...profileData,
+    };
+
     await _db
         .collection('users')
         .doc(firebaseUser.uid)
-        .set(userModel.toFirestore());
+        .set(firestoreData);
 
     _currentUser = userModel;
     await _saveToPrefs(userModel);

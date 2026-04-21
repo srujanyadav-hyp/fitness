@@ -52,8 +52,8 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } on AuthException catch (e) {
       emit(AuthFailure(message: e.message));
-    } catch (_) {
-      emit(const AuthFailure(message: 'OTP verification failed. Please try again.'));
+    } catch (e) {
+      emit(AuthFailure(message: 'Error: $e. Please try again.'));
     }
   }
 
@@ -63,6 +63,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String name,
     required String phone,
     required String role,
+    Map<String, dynamic> profileData = const {},
   }) async {
     if (name.trim().isEmpty) {
       emit(const AuthFailure(message: 'Please enter your full name.'));
@@ -74,12 +75,13 @@ class AuthCubit extends Cubit<AuthState> {
         name: name.trim(),
         phone: phone,
         role: role,
+        profileData: profileData,
       );
       emit(AuthSuccess(role: user.role));
     } on AuthException catch (e) {
       emit(AuthFailure(message: e.message));
-    } catch (_) {
-      emit(const AuthFailure(message: 'Account creation failed. Please try again.'));
+    } catch (e) {
+      emit(AuthFailure(message: 'Account creation failed: $e'));
     }
   }
 
