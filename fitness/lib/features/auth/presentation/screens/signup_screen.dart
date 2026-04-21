@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -9,7 +11,7 @@ import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 
 /// Sign-up screen shown for brand-new users after OTP verification.
-/// Reuses [AuthCubit] provided by [LoginScreen].
+/// Matches the immersive Glassmorphism sliding architecture of the Login screen.
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key, required this.phone});
   final String phone;
@@ -18,12 +20,13 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: AppTheme.dark,
-      child: Scaffold(
-        backgroundColor: AppColors.surface,
-        // Hero must stay full-screen. Keyboard offset is handled by
-        // SingleChildScrollView padding using viewInsets.bottom.
-        resizeToAvoidBottomInset: false,
-        body: _SignUpBody(phone: phone),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          backgroundColor: AppColors.background,
+          resizeToAvoidBottomInset: false,
+          body: _SignUpBody(phone: phone),
+        ),
       ),
     );
   }
@@ -42,6 +45,7 @@ class _SignUpBody extends StatefulWidget {
 class _SignUpBodyState extends State<_SignUpBody> {
   final _nameCtrl = TextEditingController();
   final _nameFocus = FocusNode();
+  String _selectedRole = 'customer';
 
   @override
   void dispose() {
@@ -52,6 +56,9 @@ class _SignUpBodyState extends State<_SignUpBody> {
 
   @override
   Widget build(BuildContext context) {
+    // Keyboard sliding logic (matching the login screen exactly)
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthFailure) {
@@ -59,29 +66,47 @@ class _SignUpBodyState extends State<_SignUpBody> {
             SnackBar(
               content: Text(state.message),
               backgroundColor: AppColors.darkSemantic.error,
+              behavior: SnackBarBehavior.floating,
             ),
           );
+        } else if (state is AuthSuccess) {
+          context.go(state.role == 'owner' ? '/owner' : '/customer');
         }
       },
       child: Stack(
+        fit: StackFit.expand, // Prevents row overflow by forcing full width
         children: [
-          // ── Hero ────────────────────────────────────────────────────
-          _HeroSection(),
+          // ── Cinematic Hero background ─────────────────────────────────────
+          const _HeroImage(),
 
-          // ── Scrollable form card ─────────────────────────────────────
-          Column(
-            children: [
-              // Transparent area for the hero (45 % of screen height)
-              SizedBox(height: MediaQuery.of(context).size.height * 0.38),
-
-              Expanded(
-                child: _SignUpCard(
-                  phone: widget.phone,
-                  nameCtrl: _nameCtrl,
-                  nameFocus: _nameFocus,
-                ),
+          // ── Logo — top-left inside safe area ───────────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: _TopBar(),
               ),
-            ],
+            ),
+          ),
+
+          // ── Premium Signup Card — slides up with keyboard ──────────────
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOutCubic,
+            left: 0,
+            right: 0,
+            bottom: keyboardHeight,
+            child: _SignUpCard(
+              phone: widget.phone,
+              nameCtrl: _nameCtrl,
+              nameFocus: _nameFocus,
+              selectedRole: _selectedRole,
+              onRoleChanged: (r) => setState(() => _selectedRole = r),
+            ),
           ),
         ],
       ),
@@ -90,85 +115,93 @@ class _SignUpBodyState extends State<_SignUpBody> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Hero image top section
+// Cinematic Hero Background image + gradient fade
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _HeroSection extends StatelessWidget {
+class _HeroImage extends StatelessWidget {
+  const _HeroImage();
+
   @override
   Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height * 0.45;
-    return SizedBox(
-      height: h,
-      width: double.infinity,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Image
-          ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              Colors.black.withValues(alpha: 0.30),
-              BlendMode.darken,
-            ),
-            child: Image.network(
-              'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80',
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              errorBuilder: (_, __, ___) =>
-                  Container(color: AppColors.surfaceContainer),
-            ),
-          ),
-
-          // Bottom fade
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    AppColors.surface.withValues(alpha: 0.70),
-                    AppColors.surface,
-                  ],
-                  stops: const [0.30, 0.72, 1.0],
-                ),
-              ),
-            ),
-          ),
-
-          // Logo
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 24, vertical: 16),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.bolt_rounded,
-                      color: AppColors.primaryContainer, size: 28),
-                  const SizedBox(width: 4),
-                  Text(
-                    'FitHub',
-                    style: GoogleFonts.lexend(
-                      color: AppColors.primaryContainer,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 22,
-                      fontStyle: FontStyle.italic,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+    return ShaderMask(
+      shaderCallback: (bounds) => LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Colors.transparent,
+          AppColors.background.withValues(alpha: 0.8),
+          AppColors.background,
         ],
+        stops: const [0.0, 0.45, 0.8],
+      ).createShader(bounds),
+      blendMode: BlendMode.srcOver,
+      child: ColorFiltered(
+        colorFilter: ColorFilter.mode(
+          Colors.black.withValues(alpha: 0.5),
+          BlendMode.darken,
+        ),
+        child: Image.network(
+          // Action-oriented gym tracking shot
+          'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=900&q=85',
+          fit: BoxFit.cover,
+          height: double.infinity,
+          width: double.infinity,
+          alignment: const Alignment(0, -0.2), // Shifts subject up into view
+        ),
       ),
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Glassmorphism sign-up card
+// Top Bar with back button and Logo
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _TopBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Back Button
+        GestureDetector(
+          onTap: () => Navigator.of(context).maybePop(),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            ),
+            child: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 20),
+          ),
+        ),
+        // Logo
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.bolt_rounded, color: AppColors.primaryContainer, size: 28),
+            const SizedBox(width: 4),
+            Text(
+              'FitHub',
+              style: GoogleFonts.lexend(
+                color: AppColors.primaryContainer,
+                fontWeight: FontWeight.w900,
+                fontSize: 22,
+                fontStyle: FontStyle.italic,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(width: 36), // Balance the back button
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The Glassmorphism Card
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _SignUpCard extends StatelessWidget {
@@ -176,148 +209,127 @@ class _SignUpCard extends StatelessWidget {
     required this.phone,
     required this.nameCtrl,
     required this.nameFocus,
+    required this.selectedRole,
+    required this.onRoleChanged,
   });
 
   final String phone;
   final TextEditingController nameCtrl;
   final FocusNode nameFocus;
+  final String selectedRole;
+  final ValueChanged<String> onRoleChanged;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
         child: Container(
+          width: double.infinity,
           decoration: BoxDecoration(
-            color: AppColors.surface.withValues(alpha: 0.60),
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+            color: AppColors.surface.withValues(alpha: 0.65),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
             border: Border(
               top: BorderSide(
-                color: AppColors.outlineVariant.withValues(alpha: 0.15),
+                color: AppColors.outlineVariant.withValues(alpha: 0.2),
               ),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.80),
-                blurRadius: 40,
+                color: AppColors.primary.withValues(alpha: 0.05),
+                blurRadius: 50,
                 offset: const Offset(0, -10),
               ),
             ],
           ),
-          child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-              28,
-              32,
-              28,
-              MediaQuery.of(context).viewInsets.bottom + 24,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Heading
-                Text(
-                  'Join FitHub',
-                  style: GoogleFonts.lexend(
-                    color: AppColors.onSurface,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 28,
-                    letterSpacing: -0.5,
-                  ),
+          padding: const EdgeInsets.fromLTRB(28, 36, 28, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Header Text ──
+              Text(
+                'Complete Profile',
+                style: GoogleFonts.lexend(
+                  color: AppColors.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 28,
+                  letterSpacing: -0.5,
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  'Create an account to start your fitness journey.',
-                  style: GoogleFonts.manrope(
-                    color: AppColors.onSurfaceVariant,
-                    fontSize: 14,
-                  ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Set up your account to get started.',
+                style: GoogleFonts.manrope(
+                  color: AppColors.onSurfaceVariant,
+                  fontSize: 14,
                 ),
-                const SizedBox(height: 28),
+              ),
+              const SizedBox(height: 32),
 
-                // Full Name field
-                _LabeledInput(
-                  label: 'Full Name',
-                  hint: 'Enter your full name',
-                  ctrl: nameCtrl,
-                  focus: nameFocus,
-                  keyboardType: TextInputType.name,
-                  textCapitalization: TextCapitalization.words,
+              // ── Inputs ──
+              _PremiumInput(
+                label: 'YOUR NAME',
+                hint: 'e.g. Rahul Sharma',
+                icon: Icons.person_outline_rounded,
+                ctrl: nameCtrl,
+                focusNode: nameFocus,
+              ),
+              const SizedBox(height: 20),
+              _VerifiedPhoneDisplay(phone: phone),
+              const SizedBox(height: 36),
+
+              // ── Role Selection ──
+              Text(
+                'HOW WILL YOU USE FITHUB?',
+                style: GoogleFonts.manrope(
+                  color: AppColors.onSurfaceVariant,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.2,
                 ),
-                const SizedBox(height: 16),
+              ),
+              const SizedBox(height: 12),
+              _PremiumRoleSelector(
+                selectedRole: selectedRole,
+                onChanged: onRoleChanged,
+              ),
+              const SizedBox(height: 40),
 
-                // Mobile field (pre-filled, readonly)
-                _ReadOnlyPhoneField(phone: phone),
-                const SizedBox(height: 28),
-
-                // Create Account button
-                _CreateAccountButton(
-                  nameCtrl: nameCtrl,
-                  phone: phone,
-                ),
-                const SizedBox(height: 22),
-
-                // Divider
-                _Divider(),
-                const SizedBox(height: 16),
-
-                // Google button
-                _GoogleSignInButton(),
-                const SizedBox(height: 20),
-
-                // Login link
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.manrope(
-                        color: AppColors.onSurfaceVariant,
-                        fontSize: 14,
-                      ),
-                      children: [
-                        const TextSpan(text: 'Already have an account? '),
-                        TextSpan(
-                          text: 'Login',
-                          style: GoogleFonts.manrope(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
+              // ── CTA & Legal ──
+              _CreateAccountButton(
+                nameCtrl: nameCtrl,
+                phone: phone,
+                role: selectedRole,
+              ),
+              const SizedBox(height: 24),
+              Center(
+                child: Text.rich(
+                  TextSpan(
+                    style: GoogleFonts.manrope(
+                      color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
+                      fontSize: 11,
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Footer
-                Center(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: GoogleFonts.manrope(
-                        color: AppColors.outlineVariant,
-                        fontSize: 11,
+                    children: const [
+                      TextSpan(text: 'By signing up, you agree to our '),
+                      TextSpan(
+                        text: 'Terms',
+                        style: TextStyle(decoration: TextDecoration.underline),
                       ),
-                      children: const [
-                        TextSpan(
-                            text: 'By creating an account, you agree to our '),
-                        TextSpan(
-                          text: 'Terms of Service',
-                          style: TextStyle(
-                              decoration: TextDecoration.underline),
-                        ),
-                        TextSpan(text: ' & '),
-                        TextSpan(
-                          text: 'Privacy Policy',
-                          style: TextStyle(
-                              decoration: TextDecoration.underline),
-                        ),
-                      ],
-                    ),
+                      TextSpan(text: ' & '),
+                      TextSpan(
+                        text: 'Privacy Policy',
+                        style: TextStyle(decoration: TextDecoration.underline),
+                      ),
+                    ],
                   ),
+                  textAlign: TextAlign.center,
                 ),
-              ],
-            ),
+              ),
+              // SafeArea padding at bottom
+              SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
+            ],
           ),
         ),
       ),
@@ -326,117 +338,126 @@ class _SignUpCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Labelled bottom-border input
+// Ultra-Premium Glowing Input Field
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _LabeledInput extends StatefulWidget {
-  const _LabeledInput({
+class _PremiumInput extends StatefulWidget {
+  const _PremiumInput({
     required this.label,
     required this.hint,
+    required this.icon,
     required this.ctrl,
-    required this.focus,
-    this.keyboardType = TextInputType.text,
-    this.textCapitalization = TextCapitalization.none,
-    this.readOnly = false,
-    this.prefix,
+    required this.focusNode,
   });
 
   final String label;
   final String hint;
+  final IconData icon;
   final TextEditingController ctrl;
-  final FocusNode focus;
-  final TextInputType keyboardType;
-  final TextCapitalization textCapitalization;
-  final bool readOnly;
-  final Widget? prefix;
+  final FocusNode focusNode;
 
   @override
-  State<_LabeledInput> createState() => _LabeledInputState();
+  State<_PremiumInput> createState() => _PremiumInputState();
 }
 
-class _LabeledInputState extends State<_LabeledInput> {
-  bool _focused = false;
+class _PremiumInputState extends State<_PremiumInput> {
+  bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
-    widget.focus.addListener(() {
-      if (mounted) setState(() => _focused = widget.focus.hasFocus);
-    });
+    widget.focusNode.addListener(_handleFocus);
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(_handleFocus);
+    super.dispose();
+  }
+
+  void _handleFocus() {
+    if (mounted) setState(() => _isFocused = widget.focusNode.hasFocus);
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutQuart,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-        border: Border(
-          bottom: BorderSide(
-            color: _focused
-                ? AppColors.primary
-                : AppColors.outlineVariant,
-            width: 2,
-          ),
+        color: _isFocused 
+            ? AppColors.surfaceContainerHigh.withValues(alpha: 0.6) 
+            : AppColors.surfaceContainer.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: _isFocused
+              ? AppColors.primary.withValues(alpha: 0.8)
+              : AppColors.outlineVariant.withValues(alpha: 0.2),
+          width: 1.5,
         ),
-        boxShadow: _focused
+        boxShadow: _isFocused
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.12),
-                  blurRadius: 15,
-                  offset: const Offset(0, 4),
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                  blurRadius: 20,
+                  spreadRadius: 2,
                 )
               ]
             : [],
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.prefix != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 14, bottom: 12),
-              child: widget.prefix,
+          Row(
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: _isFocused
+                      ? AppColors.primary.withValues(alpha: 0.15)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  widget.icon,
+                  size: 16,
+                  color: _isFocused ? AppColors.primary : AppColors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                widget.label,
+                style: GoogleFonts.manrope(
+                  color: _isFocused ? AppColors.primary : AppColors.onSurfaceVariant,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          TextField(
+            controller: widget.ctrl,
+            focusNode: widget.focusNode,
+            keyboardType: TextInputType.name,
+            textCapitalization: TextCapitalization.words,
+            style: GoogleFonts.lexend(
+              color: AppColors.onSurface,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
             ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                  child: Text(
-                    widget.label,
-                    style: GoogleFonts.manrope(
-                      color: _focused
-                          ? AppColors.primary
-                          : AppColors.onSurfaceVariant,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                ),
-                TextField(
-                  controller: widget.ctrl,
-                  focusNode: widget.focus,
-                  keyboardType: widget.keyboardType,
-                  textCapitalization: widget.textCapitalization,
-                  readOnly: widget.readOnly,
-                  style: GoogleFonts.manrope(
-                    color: AppColors.onSurface,
-                    fontSize: 16,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: widget.hint,
-                    hintStyle: GoogleFonts.manrope(
-                      color: AppColors.outline,
-                      fontSize: 16,
-                    ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-                  ),
-                ),
-              ],
+            decoration: InputDecoration(
+              hintText: widget.hint,
+              hintStyle: GoogleFonts.lexend(
+                color: AppColors.outline.withValues(alpha: 0.5),
+                fontWeight: FontWeight.w400,
+              ),
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: const EdgeInsets.only(bottom: 8),
             ),
           ),
         ],
@@ -445,38 +466,58 @@ class _LabeledInputState extends State<_LabeledInput> {
   }
 }
 
-// Read-only phone field (pre-filled with verified number)
-class _ReadOnlyPhoneField extends StatelessWidget {
-  const _ReadOnlyPhoneField({required this.phone});
+// ─────────────────────────────────────────────────────────────────────────────
+// Verified Phone Display (Beautiful Non-editable field)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _VerifiedPhoneDisplay extends StatelessWidget {
+  const _VerifiedPhoneDisplay({required this.phone});
   final String phone;
 
   @override
   Widget build(BuildContext context) {
-    final ctrl = TextEditingController(text: phone);
-    final focus = FocusNode();
-    return _LabeledInput(
-      label: 'Mobile Number',
-      hint: '',
-      ctrl: ctrl,
-      focus: focus,
-      readOnly: true,
-      prefix: Row(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainer.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.outlineVariant.withValues(alpha: 0.1),
+        ),
+      ),
+      child: Row(
         children: [
-          const Text('🇮🇳', style: TextStyle(fontSize: 20)),
-          const SizedBox(width: 6),
-          Text(
-            '+91',
-            style: GoogleFonts.manrope(
-              color: AppColors.onSurface,
-              fontWeight: FontWeight.w500,
-              fontSize: 15,
-            ),
-          ),
-          const SizedBox(width: 10),
           Container(
-            width: 1,
-            height: 24,
-            color: AppColors.outlineVariant.withValues(alpha: 0.30),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.green.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.verified_rounded, color: Colors.green, size: 18),
+          ),
+          const SizedBox(width: 14),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'MOBILE NUMBER',
+                style: GoogleFonts.manrope(
+                  color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.0,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                phone,
+                style: GoogleFonts.lexend(
+                  color: AppColors.onSurface.withValues(alpha: 0.8),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -484,16 +525,114 @@ class _ReadOnlyPhoneField extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Animated Glassmorphic Segmented Role Selector
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _PremiumRoleSelector extends StatelessWidget {
+  const _PremiumRoleSelector({
+    required this.selectedRole,
+    required this.onChanged,
+  });
+
+  final String selectedRole;
+  final ValueChanged<String> onChanged;
+
+  static const _roles = [
+    ('customer', 'Member', Icons.fitness_center_rounded),
+    ('owner', 'Owner', Icons.storefront_rounded),
+    ('both', 'Both', Icons.all_inclusive_rounded),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: _roles.map((role) {
+        final isSelected = selectedRole == role.$1;
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: role == _roles.last ? 0 : 8),
+            child: GestureDetector(
+              onTap: () => onChanged(role.$1),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOutQuart,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  gradient: isSelected
+                      ? const LinearGradient(
+                          colors: [AppColors.primary, AppColors.primaryContainer],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  color: isSelected
+                      ? null
+                      : AppColors.surfaceContainerHigh.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppColors.primaryContainer.withValues(alpha: 0.5)
+                        : AppColors.outlineVariant.withValues(alpha: 0.15),
+                    width: isSelected ? 1.5 : 1,
+                  ),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 4),
+                          )
+                        ]
+                      : [],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AnimatedScale(
+                      scale: isSelected ? 1.1 : 1.0,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOutBack,
+                      child: Icon(
+                        role.$3,
+                        color: isSelected ? Colors.white : AppColors.onSurfaceVariant,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      role.$2,
+                      style: GoogleFonts.manrope(
+                        color: isSelected ? Colors.white : AppColors.onSurfaceVariant,
+                        fontSize: 12,
+                        fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Epic Gradient Create Engine Button
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _CreateAccountButton extends StatelessWidget {
   const _CreateAccountButton({
     required this.nameCtrl,
     required this.phone,
+    required this.role,
   });
 
   final TextEditingController nameCtrl;
   final String phone;
+  final String role;
 
   @override
   Widget build(BuildContext context) {
@@ -506,9 +645,11 @@ class _CreateAccountButton extends StatelessWidget {
               : () => context.read<AuthCubit>().createAccount(
                     name: nameCtrl.text.trim(),
                     phone: phone,
+                    role: role,
                   ),
-          child: Container(
-            height: 56,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 60,
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
@@ -516,107 +657,52 @@ class _CreateAccountButton extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.30),
-                  blurRadius: 20,
-                  offset: const Offset(0, 6),
+                  color: AppColors.primary.withValues(alpha: 0.35),
+                  blurRadius: 25,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),
-            alignment: Alignment.center,
             child: loading
-                ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: AppColors.onPrimaryContainer),
+                ? const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        color: Colors.white,
+                      ),
+                    ),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Create Account',
+                        'Launch FitHub',
                         style: GoogleFonts.lexend(
-                          color: AppColors.onPrimaryContainer,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 17,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Icon(Icons.arrow_forward_rounded,
-                          color: AppColors.onPrimaryContainer, size: 20),
+                      const SizedBox(width: 12),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.25),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.arrow_forward_rounded,
+                            color: Colors.white, size: 16),
+                      ),
                     ],
                   ),
           ),
         );
       },
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-            child: Container(
-                height: 1,
-                color: AppColors.outlineVariant.withValues(alpha: 0.40))),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            'or sign up with',
-            style: GoogleFonts.manrope(
-              color: AppColors.onSurfaceVariant,
-              fontSize: 11,
-              letterSpacing: 0.8,
-            ),
-          ),
-        ),
-        Expanded(
-            child: Container(
-                height: 1,
-                color: AppColors.outlineVariant.withValues(alpha: 0.40))),
-      ],
-    );
-  }
-}
-
-class _GoogleSignInButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {/* TODO: Google Sign-In */},
-      child: Container(
-        height: 56,
-        decoration: BoxDecoration(
-          color: AppColors.surfaceContainer,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-              color: AppColors.outlineVariant.withValues(alpha: 0.30)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('G', style: TextStyle(fontSize: 20, color: Color(0xFF4285F4), fontWeight: FontWeight.w700)),
-            const SizedBox(width: 10),
-            Text(
-              'Continue with Google',
-              style: GoogleFonts.manrope(
-                color: AppColors.onSurface,
-                fontWeight: FontWeight.w500,
-                fontSize: 15,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

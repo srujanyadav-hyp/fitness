@@ -10,17 +10,14 @@ import '../../../../core/theme/app_theme.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 
-/// Entry point for the auth flow. Provides [AuthCubit] and delegates
-/// rendering to [_LoginView].
+/// Entry point for the auth flow.
+/// [AuthCubit] is provided by the router via [BlocProvider.value].
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthCubit(),
-      child: const _LoginView(),
-    );
+    return const _LoginView();
   }
 }
 
@@ -87,46 +84,50 @@ class _LoginBodyState extends State<_LoginBody> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
-    // viewInsets.bottom == keyboard height (0 when keyboard is hidden).
-    // We animate the card up by exactly that amount — no hardcoded pixels,
-    // so this works correctly on every screen size and form factor.
+    // viewInsets.bottom == keyboard height (0 when hidden).
+    // AnimatedContainer.margin shifts the card up by exactly that amount.
+    // Because the card is Positioned (not inside a Column with a Spacer),
+    // RenderFlex overflow is structurally impossible on any screen size.
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
+    // StackFit.expand forces the Stack to fill the full Scaffold body
+    // (tight constraints from parent).
+    // Without this, Stack sizes to non-positioned children (the SafeArea logo),
+    // making its width ~logo-width, which then leaks as an 88.9px constraint
+    // deep into the PhoneCard Row — causing the overflow.
     return Stack(
+      fit: StackFit.expand,
       children: [
-        // ── Hero background ───────────────────────────────────────────────
-        Positioned.fill(
-          child: _HeroImage(),
+        // ── Full-screen hero ──────────────────────────────────────────────
+        _HeroImage(),
+
+        // ── Logo — top-left, inside safe area ────────────────────────────
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: _FitHubLogo(),
+            ),
+          ),
         ),
 
-        // ── Content ───────────────────────────────────────────────────────
-        SafeArea(
-          // bottom: false → we manage bottom space ourselves
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Logo top-left
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 24, vertical: 16),
-                child: _FitHubLogo(),
-              ),
-
-              const Spacer(),
-
-              // Animate upward as keyboard appears
-              AnimatedPadding(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOutCubic,
-                padding: EdgeInsets.only(bottom: keyboardHeight),
-                child: _PhoneCard(
-                  phoneCtrl: _phoneCtrl,
-                  phoneFocus: _phoneFocus,
-                ),
-              ),
-            ],
+        // ── Phone card slides up as keyboard appears ──────────────────────
+        // left:0 + right:0 + StackFit.expand = always exact screen width.
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          left: 0,
+          right: 0,
+          bottom: keyboardHeight,
+          child: _PhoneCard(
+            phoneCtrl: _phoneCtrl,
+            phoneFocus: _phoneFocus,
           ),
         ),
       ],
@@ -159,11 +160,12 @@ class _HeroImage extends StatelessWidget {
           BlendMode.darken,
         ),
         child: Image.network(
-          'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+          // Striking heavy rope/training shot — high clarity and energy
+          'https://images.unsplash.com/photo-1594381898411-846e7d193883?q=85&w=900',
           fit: BoxFit.cover,
           height: double.infinity,
           width: double.infinity,
-          alignment: Alignment.topCenter,
+          alignment: const Alignment(0, -0.2), // Shifts subject up into view
           errorBuilder: (_, __, ___) => Container(
             color: AppColors.surfaceContainer,
           ),
@@ -279,27 +281,8 @@ class _PhoneCard extends StatelessWidget {
               _GoogleButton(),
               const SizedBox(height: 20),
 
-              // Partner link
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                    style: GoogleFonts.manrope(
-                      color: AppColors.onSurfaceVariant,
-                      fontSize: 13,
-                    ),
-                    children: [
-                      const TextSpan(text: 'Are you a gym owner? '),
-                      TextSpan(
-                        text: 'Partner with us',
-                        style: GoogleFonts.manrope(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // ── Animated looping signup link ──────────────────────────
+              const Center(child: _LoopingSignupLink()),
               const SizedBox(height: 20),
 
               // Footer
@@ -572,13 +555,13 @@ class _GoogleButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Google 'G' SVG colour logo
-            SizedBox(
-              width: 20,
-              height: 20,
-              child: CustomPaint(painter: _GoogleLogoPainter()),
+            // Official Google 'G' Logo from Wikimedia
+            Image.network(
+              'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/120px-Google_%22G%22_logo.svg.png',
+              width: 22,
+              height: 22,
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Text(
               'Continue with Google',
               style: GoogleFonts.manrope(
@@ -594,38 +577,93 @@ class _GoogleButton extends StatelessWidget {
   }
 }
 
-/// Draws the 4-colour Google 'G' logo.
-class _GoogleLogoPainter extends CustomPainter {
+// ─────────────────────────────────────────────────────────────────────────────
+// Animated Looping Signup Link
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _LoopingSignupLink extends StatefulWidget {
+  const _LoopingSignupLink();
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final rect = Offset.zero & size;
-    final path = Path();
+  State<_LoopingSignupLink> createState() => _LoopingSignupLinkState();
+}
 
-    // Blue arc
-    final blue = Paint()..color = const Color(0xFF4285F4);
-    // Red arc
-    final red = Paint()..color = const Color(0xFFEA4335);
-    // Yellow arc
-    final yellow = Paint()..color = const Color(0xFFFBBC05);
-    // Green arc
-    final green = Paint()..color = const Color(0xFF34A853);
+class _LoopingSignupLinkState extends State<_LoopingSignupLink> {
+  int _currentIndex = 0;
+  
+  final List<List<TextSpan>> _pitches = [
+    [
+      const TextSpan(text: 'Looking for the perfect workout? '),
+      const TextSpan(text: 'Join as Member'),
+    ],
+    [
+      const TextSpan(text: 'Are you a gym owner? '),
+      const TextSpan(text: 'Partner with us'),
+    ],
+  ];
 
-    final center = rect.center;
-    final r = size.width / 2;
+  @override
+  void initState() {
+    super.initState();
+    _startLoop();
+  }
 
-    // Simplified G using arcs – good enough for a logo mark
-    canvas.drawArc(rect, 0.35, 4.85, false, blue..strokeWidth = r * 0.30 ..style = PaintingStyle.stroke);
-    canvas.drawArc(rect, 5.20, 1.15, false, red ..strokeWidth = r * 0.30 ..style = PaintingStyle.stroke);
-    canvas.drawArc(rect, 0.00, 0.35, false, yellow..strokeWidth = r * 0.30 ..style = PaintingStyle.stroke);
-    canvas.drawArc(rect, 4.85, 0.35, false, green..strokeWidth = r * 0.30 ..style = PaintingStyle.stroke);
-
-    // Horizontal bar of the G
-    canvas.drawRect(
-      Rect.fromLTWH(center.dx, center.dy - r * 0.15, r, r * 0.30),
-      blue,
-    );
+  void _startLoop() async {
+    while (mounted) {
+      await Future.delayed(const Duration(seconds: 4));
+      if (!mounted) return;
+      setState(() {
+        _currentIndex = (_currentIndex + 1) % _pitches.length;
+      });
+    }
   }
 
   @override
-  bool shouldRepaint(_GoogleLogoPainter old) => false;
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push('/login/signup'),
+      child: Container(
+        color: Colors.transparent, // Ensures the entire area is clickable
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 600),
+          switchInCurve: Curves.easeOutQuart,
+          switchOutCurve: Curves.easeInQuart,
+          transitionBuilder: (child, animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 0.4),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
+            );
+          },
+          child: RichText(
+            key: ValueKey<int>(_currentIndex),
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: GoogleFonts.manrope(
+                color: AppColors.onSurfaceVariant,
+                fontSize: 13,
+                height: 1.4,
+              ),
+              children: [
+                _pitches[_currentIndex][0],
+                TextSpan(
+                  text: _pitches[_currentIndex][1].text,
+                  style: GoogleFonts.manrope(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

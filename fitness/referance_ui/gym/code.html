@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gym Owner Profile - Step 1</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#28283d",
+                        "inverse-surface": "#e2e0fc",
+                        "on-background": "#e2e0fc",
+                        "on-primary-fixed": "#3f0400",
+                        "secondary-fixed-dim": "#ffb4a5",
+                        "inverse-primary": "#ba1b00",
+                        "tertiary-fixed-dim": "#64d4fc",
+                        "outline-variant": "#5c403a",
+                        "on-tertiary-container": "#002e3c",
+                        "error": "#ffb4ab",
+                        "primary-container": "#ff5637",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdad3",
+                        "on-primary": "#650a00",
+                        "background": "#111125",
+                        "on-tertiary": "#003544",
+                        "secondary": "#ffb4a5",
+                        "on-primary-fixed-variant": "#8e1300",
+                        "on-primary-container": "#590800",
+                        "surface-dim": "#111125",
+                        "surface-container-low": "#1a1a2e",
+                        "inverse-on-surface": "#2f2e43",
+                        "secondary-fixed": "#ffdad3",
+                        "surface": "#111125",
+                        "primary": "#ffb4a5",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "error-container": "#93000a",
+                        "outline": "#ac8982",
+                        "on-tertiary-fixed-variant": "#004d62",
+                        "surface-variant": "#333348",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#e5beb6",
+                        "on-secondary-fixed-variant": "#832616",
+                        "on-secondary": "#630f03",
+                        "on-secondary-container": "#ff9a86",
+                        "on-tertiary-fixed": "#001f29",
+                        "tertiary-fixed": "#baeaff",
+                        "surface-container-highest": "#333348",
+                        "on-secondary-fixed": "#3f0400",
+                        "tertiary-container": "#0e9dc3",
+                        "surface-container": "#1e1e32",
+                        "on-surface": "#e2e0fc",
+                        "tertiary": "#64d4fc",
+                        "surface-tint": "#ffb4a5",
+                        "surface-container-lowest": "#0c0c1f",
+                        "surface-bright": "#37374d",
+                        "secondary-container": "#832616"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    fontFamily: {
+                        "headline": ["Lexend", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Lexend', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom form styling for "Kinetic Pulse" theme */
+        input[type="text"], input[type="date"], input[type="number"], select {
+            background-color: theme('colors.surface-container-highest');
+            border: 1px solid transparent;
+            color: theme('colors.on-surface');
+        }
+        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus {
+            background-color: theme('colors.surface-bright');
+            border-color: rgba(255, 180, 165, 0.4); /* primary at 40% */
+            box-shadow: none;
+            outline: none;
+        }
+        ::placeholder { color: theme('colors.on-surface-variant'); opacity: 0.6; }
+        
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen pb-32">
+<!-- TopAppBar (Transactional - Hidden standard nav, custom progress header) -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-xl w-full border-b border-surface-container-low">
+<div class="px-6 py-4 flex items-center justify-between">
+<button class="text-on-surface hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full bg-surface-container-low hover:bg-surface-container">
+<span class="material-symbols-outlined text-xl">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-xl tracking-tight uppercase text-primary-container">OWNER PROFILE</h1>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</div>
+<!-- Progress Indicator -->
+<div class="px-6 pb-4">
+<div class="flex justify-between items-end mb-2">
+<div class="flex flex-col">
+<span class="font-label text-[10px] text-tertiary uppercase tracking-widest font-bold mb-1">Step 1</span>
+<span class="font-headline text-sm font-semibold text-on-surface">Your Details</span>
+</div>
+<div class="flex flex-col items-end opacity-50">
+<span class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-bold mb-1">Step 2</span>
+<span class="font-headline text-sm font-semibold text-on-surface-variant">Your Gym</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[40%] rounded-full relative shadow-[0_0_10px_rgba(100,212,252,0.5)]"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="px-4 py-8 space-y-12 md:max-w-3xl md:mx-auto">
+<!-- Card 1: Personal Details -->
+<section class="bg-surface-container rounded-xl p-6 relative overflow-hidden group">
+<!-- Decorative atmospheric glow -->
+<div class="absolute -top-20 -right-20 w-40 h-40 bg-primary-container/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="mb-8">
+<h2 class="font-headline text-2xl font-bold tracking-tight mb-1 text-on-surface">Personal Details</h2>
+<p class="font-body text-sm text-on-surface-variant">Tell us about the visionary behind the space.</p>
+</div>
+<!-- Photo Upload Area -->
+<div class="flex items-center space-x-6 mb-8">
+<div class="relative w-24 h-24 rounded-full bg-surface-container-highest border border-outline-variant/15 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-primary/30 transition-colors">
+<img alt="User Profile Placeholder" class="w-full h-full object-cover opacity-60 mix-blend-luminosity" data-alt="Black and white artistic portrait of fitness professional looking away with dramatic studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxBpwoJIEjxQ27RKULpNaqVpPAfopqyKFh1rP8KmZQzfiv54b_G-GYlW4D7AqT9kIbdrjYc1ZWp2C-avgK30pAd2nBVpwkibud7KZaB0U9FjIftyFM1862PKle13jq105N3HHK9JNWHiahuercDqE9Fo8bJ8I7_cd-X6RcJM3RExq_4P8nc1GNT4GqS6NC0bDiNniXU7Dp3B_QCZiTR7gcwxHhzKiOQPhzVbKKXV_Dn9r2Jtq2_LmuI2CVnYdRoAJImy2XusMVips"/>
+<div class="absolute inset-0 bg-surface/40 flex flex-col items-center justify-center cursor-pointer hover:bg-surface/20 transition-all">
+<span class="material-symbols-outlined text-primary text-2xl mb-1 drop-shadow-md">add_a_photo</span>
+</div>
+</div>
+<div>
+<button class="bg-surface-variant text-primary font-label text-xs font-bold tracking-wider uppercase px-4 py-2 rounded-lg border border-outline-variant/15 hover:bg-surface-bright transition-colors mb-2 block">Upload Photo</button>
+<p class="text-[10px] text-on-surface-variant font-body">JPEG, PNG up to 5MB. Professional headshot recommended.</p>
+</div>
+</div>
+<!-- Form Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Full Name</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="e.g. Vikram Singh" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Date of Birth</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors text-on-surface-variant" type="date"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Gender</label>
+<select class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors appearance-none">
+<option disabled="" selected="" value="">Select Gender</option>
+<option value="male">Male</option>
+<option value="female">Female</option>
+<option value="other">Other</option>
+<option value="prefer_not">Prefer not to say</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Base City</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="e.g. Mumbai" type="text"/>
+</div>
+</div>
+</section>
+<!-- Card 2: Gym Details -->
+<section class="bg-surface-container rounded-xl p-6">
+<div class="mb-8">
+<h2 class="font-headline text-2xl font-bold tracking-tight mb-1 text-on-surface">Gym Details</h2>
+<p class="font-body text-sm text-on-surface-variant">The core identity and location of your facility.</p>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Registered Gym Name</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="e.g. Iron Forge Athletics" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Full Street Address</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="Building name, street, neighborhood" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Pincode</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="400050" type="number"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">City</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="Mumbai" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Primary Contact Number</label>
+<div class="flex">
+<span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-transparent bg-surface-container-highest text-on-surface-variant text-sm font-body">+91</span>
+<input class="w-full px-4 py-3 rounded-r-lg text-sm font-body focus:ring-0 transition-colors bg-surface-container-highest" placeholder="98765 43210" type="tel"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Est. Year</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="2018" type="number"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">Capacity (Sq Ft)</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors" placeholder="2500" type="number"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Card 3: Gym Type & Services (Bento Grid Style) -->
+<section class="bg-surface-container rounded-xl p-6">
+<div class="mb-8 flex items-start justify-between">
+<div>
+<h2 class="font-headline text-2xl font-bold tracking-tight mb-1 text-on-surface">Classification</h2>
+<p class="font-body text-sm text-on-surface-variant">Define what makes your space unique.</p>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Type Selection -->
+<div class="bg-surface-container-low rounded-xl p-5 border border-outline-variant/15">
+<h3 class="font-label text-[10px] text-on-surface uppercase tracking-widest font-bold mb-4 flex items-center">
+<span class="material-symbols-outlined text-sm mr-2 text-primary">domain</span>
+                        Facility Type
+                    </h3>
+<div class="flex flex-wrap gap-3">
+<button class="bg-primary/10 border border-primary/40 text-primary px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-primary/20 transition-colors flex items-center h-10">
+                            Standalone
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-surface-bright transition-colors flex items-center h-10">
+                            Franchise
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-surface-bright transition-colors flex items-center h-10">
+                            Boutique Studio
+                        </button>
+</div>
+</div>
+<!-- Specialisations Selection -->
+<div class="bg-surface-container-low rounded-xl p-5 border border-outline-variant/15">
+<h3 class="font-label text-[10px] text-on-surface uppercase tracking-widest font-bold mb-4 flex items-center">
+<span class="material-symbols-outlined text-sm mr-2 text-tertiary">fitness_center</span>
+                        Core Specialisations
+                    </h3>
+<div class="flex flex-wrap gap-3">
+<button class="bg-tertiary/10 border border-tertiary/40 text-tertiary px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-tertiary/20 transition-colors flex items-center h-10">
+                            Weight Training
+                        </button>
+<button class="bg-tertiary/10 border border-tertiary/40 text-tertiary px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-tertiary/20 transition-colors flex items-center h-10">
+                            Personal Training
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-surface-bright transition-colors flex items-center h-10">
+                            CrossFit
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-surface-bright transition-colors flex items-center h-10">
+                            Yoga
+                        </button>
+</div>
+</div>
+<!-- Facilities Selection (Full Width) -->
+<div class="bg-surface-container-low rounded-xl p-5 border border-outline-variant/15 md:col-span-2">
+<h3 class="font-label text-[10px] text-on-surface uppercase tracking-widest font-bold mb-4 flex items-center">
+<span class="material-symbols-outlined text-sm mr-2 text-primary">verified</span>
+                        Available Facilities
+                    </h3>
+<div class="flex flex-wrap gap-3">
+<button class="bg-primary/10 border border-primary/40 text-primary px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-primary/20 transition-colors flex items-center h-10">
+                            AC
+                        </button>
+<button class="bg-primary/10 border border-primary/40 text-primary px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-primary/20 transition-colors flex items-center h-10">
+                            Parking
+                        </button>
+<button class="bg-primary/10 border border-primary/40 text-primary px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-primary/20 transition-colors flex items-center h-10">
+                            Lockers
+                        </button>
+<button class="bg-primary/10 border border-primary/40 text-primary px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-primary/20 transition-colors flex items-center h-10">
+                            Showers
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-surface-bright transition-colors flex items-center h-10">
+                            Steam Room
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-surface-bright transition-colors flex items-center h-10">
+                            Cafeteria
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-semibold hover:bg-surface-bright transition-colors flex items-center h-10">
+                            Pool
+                        </button>
+<button class="bg-surface-variant border border-outline-variant/15 text-on-surface-variant w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Card 4: Business & Payout -->
+<section class="bg-surface-container rounded-xl p-6 relative overflow-hidden">
+<!-- Secure Banner Glassmorphism -->
+<div class="absolute top-0 right-0 bg-surface-variant/80 backdrop-blur-md px-4 py-1.5 rounded-bl-lg border-b border-l border-outline-variant/15 flex items-center">
+<span class="material-symbols-outlined text-tertiary text-xs mr-1.5 fill">lock</span>
+<span class="font-label text-[9px] text-tertiary uppercase tracking-widest font-bold">Secure Data</span>
+</div>
+<div class="mb-8 pt-2">
+<h2 class="font-headline text-2xl font-bold tracking-tight mb-1 text-on-surface">Business &amp; Payout</h2>
+<p class="font-body text-sm text-on-surface-variant">Taxation and settlement details.</p>
+</div>
+<div class="space-y-6">
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant/15 flex items-start space-x-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+</div>
+<div class="flex-1 space-y-4">
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">GST Number (Optional)</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors uppercase font-mono tracking-wider" placeholder="22AAAAA0000A1Z5" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest font-semibold block">UPI ID for Settlements</label>
+<input class="w-full px-4 py-3 rounded-lg text-sm font-body focus:ring-0 transition-colors lowercase font-mono" placeholder="merchantname@bank" type="text"/>
+<p class="text-[10px] text-on-surface-variant font-body mt-1">Earnings will be transferred to this UPI ID weekly.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom CTA -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/90 backdrop-blur-xl border-t border-surface-container-low p-4 md:p-6 z-50">
+<div class="max-w-3xl mx-auto flex justify-end">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container px-8 py-4 rounded-xl font-headline font-bold text-sm tracking-wide shadow-[0_16px_32px_-16px_rgba(255,86,55,0.4)] hover:opacity-90 transition-all flex items-center w-full md:w-auto justify-center">
+                Next — Gym Details
+                <span class="material-symbols-outlined ml-2 text-lg">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

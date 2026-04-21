@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Setup Profile - Kinetic Pulse</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800;900&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#28283d",
+                        "inverse-surface": "#e2e0fc",
+                        "on-background": "#e2e0fc",
+                        "on-primary-fixed": "#3f0400",
+                        "secondary-fixed-dim": "#ffb4a5",
+                        "inverse-primary": "#ba1b00",
+                        "tertiary-fixed-dim": "#64d4fc",
+                        "outline-variant": "#5c403a",
+                        "on-tertiary-container": "#002e3c",
+                        "error": "#ffb4ab",
+                        "primary-container": "#ff5637",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#ffdad3",
+                        "on-primary": "#650a00",
+                        "background": "#111125",
+                        "on-tertiary": "#003544",
+                        "secondary": "#ffb4a5",
+                        "on-primary-fixed-variant": "#8e1300",
+                        "on-primary-container": "#590800",
+                        "surface-dim": "#111125",
+                        "surface-container-low": "#1a1a2e",
+                        "inverse-on-surface": "#2f2e43",
+                        "secondary-fixed": "#ffdad3",
+                        "surface": "#111125",
+                        "primary": "#ffb4a5",
+                        "primary-fixed-dim": "#ffb4a5",
+                        "error-container": "#93000a",
+                        "outline": "#ac8982",
+                        "on-tertiary-fixed-variant": "#004d62",
+                        "surface-variant": "#333348",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#e5beb6",
+                        "on-secondary-fixed-variant": "#832616",
+                        "on-secondary": "#630f03",
+                        "on-secondary-container": "#ff9a86",
+                        "on-tertiary-fixed": "#001f29",
+                        "tertiary-fixed": "#baeaff",
+                        "surface-container-highest": "#333348",
+                        "on-secondary-fixed": "#3f0400",
+                        "tertiary-container": "#0e9dc3",
+                        "surface-container": "#1e1e32",
+                        "on-surface": "#e2e0fc",
+                        "tertiary": "#64d4fc",
+                        "surface-tint": "#ffb4a5",
+                        "surface-container-lowest": "#0c0c1f",
+                        "surface-bright": "#37374d",
+                        "secondary-container": "#832616"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    fontFamily: {
+                        "headline": ["Lexend", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6, .font-headline {
+            font-family: 'Lexend', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#111125] dark:bg-[#111125] flex justify-between items-center px-6 py-4 w-full h-16 docked full-width top-0 sticky z-50">
+<button class="text-[#ff5637] dark:text-[#ff5637] hover:opacity-80 transition-opacity scale-95 active:duration-150">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-[#ff5637] text-lg font-black tracking-tighter uppercase font-headline">PROFILE</h1>
+<button class="text-[#ff5637] dark:text-[#ff5637] hover:opacity-80 transition-opacity scale-95 active:duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="bg-[#1e1e32] h-[1px] w-full opacity-10 absolute bottom-0 left-0"></div>
+</header>
+<main class="max-w-2xl mx-auto px-4 pt-6">
+<!-- Progress Bar -->
+<div class="mb-8">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold tracking-widest uppercase text-on-surface/60 font-label">Setup Progress</span>
+<span class="text-xs font-bold text-tertiary font-label">30%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full w-[30%]"></div>
+</div>
+</div>
+<!-- Role Badges -->
+<div class="flex gap-3 mb-10">
+<div class="bg-tertiary/10 border border-tertiary/20 rounded-full px-4 py-1.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-tertiary text-xs font-bold tracking-wide font-label uppercase">Member</span>
+</div>
+<div class="bg-primary-container/10 border border-primary-container/20 rounded-full px-4 py-1.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-sm" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+<span class="text-primary-container text-xs font-bold tracking-wide font-label uppercase">Gym Owner</span>
+</div>
+</div>
+<!-- Header -->
+<div class="mb-10">
+<h2 class="text-3xl font-extrabold tracking-tight font-headline mb-2 text-inverse-surface">Set up your profile</h2>
+<p class="text-sm text-on-surface-variant font-body">Let's get to know you before setting up your facility.</p>
+</div>
+<div class="space-y-8">
+<!-- Card 1: About You -->
+<section class="bg-surface-container-high rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-variant/20 to-transparent pointer-events-none"></div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold font-headline tracking-tight text-on-surface">About You</h3>
+<span class="material-symbols-outlined text-on-surface-variant/50">account_circle</span>
+</div>
+<div class="space-y-5">
+<div class="space-y-2">
+<label class="text-xs font-semibold tracking-wide uppercase text-on-surface-variant font-label">Full Name</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg p-4 text-sm text-on-surface placeholder-on-surface/40 focus:ring-1 focus:ring-primary/40 focus:bg-surface-bright transition-colors" type="text" value="Arjun Mehta"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-xs font-semibold tracking-wide uppercase text-on-surface-variant font-label">Age</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg p-4 text-sm text-on-surface placeholder-on-surface/40 focus:ring-1 focus:ring-primary/40 focus:bg-surface-bright transition-colors" type="number" value="32"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold tracking-wide uppercase text-on-surface-variant font-label">Gender</label>
+<select class="w-full bg-surface-container-highest border-none rounded-lg p-4 text-sm text-on-surface focus:ring-1 focus:ring-primary/40 focus:bg-surface-bright transition-colors appearance-none">
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Card 2: Your Fitness -->
+<section class="bg-surface-container-high rounded-xl p-6 relative overflow-hidden">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold font-headline tracking-tight text-on-surface">Your Fitness</h3>
+<span class="material-symbols-outlined text-on-surface-variant/50">monitor_heart</span>
+</div>
+<div class="space-y-6">
+<div class="space-y-3">
+<label class="text-xs font-semibold tracking-wide uppercase text-on-surface-variant font-label">Primary Goal</label>
+<div class="grid grid-cols-2 gap-3">
+<button class="bg-surface-variant border border-outline-variant/15 rounded-lg p-3 text-sm font-medium text-on-surface hover:bg-surface-bright transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">directions_run</span> Cardio
+                            </button>
+<button class="bg-primary-container border-none rounded-lg p-3 text-sm font-bold text-on-primary-container flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">fitness_center</span> Strength
+                            </button>
+<button class="bg-surface-variant border border-outline-variant/15 rounded-lg p-3 text-sm font-medium text-on-surface hover:bg-surface-bright transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">self_improvement</span> Mobility
+                            </button>
+<button class="bg-surface-variant border border-outline-variant/15 rounded-lg p-3 text-sm font-medium text-on-surface hover:bg-surface-bright transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">scale</span> Weight Loss
+                            </button>
+</div>
+</div>
+<div class="space-y-3">
+<label class="text-xs font-semibold tracking-wide uppercase text-on-surface-variant font-label">Current Level</label>
+<div class="flex bg-surface-container-lowest p-1 rounded-lg">
+<button class="flex-1 py-2 text-xs font-semibold text-on-surface-variant hover:text-on-surface rounded-md transition-colors">Beginner</button>
+<button class="flex-1 py-2 text-xs font-bold text-on-surface bg-surface-variant rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-colors">Intermediate</button>
+<button class="flex-1 py-2 text-xs font-semibold text-on-surface-variant hover:text-on-surface rounded-md transition-colors">Advanced</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Card 3: Interests -->
+<section class="bg-surface-container-high rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold font-headline tracking-tight text-on-surface">Interests</h3>
+<span class="material-symbols-outlined text-on-surface-variant/50">favorite</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-variant text-on-surface-variant text-xs font-semibold px-4 py-2 rounded-full border border-outline-variant/15">CrossFit</span>
+<span class="bg-primary-container/20 text-primary font-bold text-xs px-4 py-2 rounded-full border border-primary/30">Powerlifting</span>
+<span class="bg-surface-variant text-on-surface-variant text-xs font-semibold px-4 py-2 rounded-full border border-outline-variant/15">Yoga</span>
+<span class="bg-surface-variant text-on-surface-variant text-xs font-semibold px-4 py-2 rounded-full border border-outline-variant/15">Nutrition</span>
+<span class="bg-primary-container/20 text-primary font-bold text-xs px-4 py-2 rounded-full border border-primary/30">HIIT</span>
+<span class="bg-surface-variant text-on-surface-variant text-xs font-semibold px-4 py-2 rounded-full border border-outline-variant/15">Boxing</span>
+<button class="bg-surface-container-lowest text-on-surface text-xs font-bold px-4 py-2 rounded-full border border-dashed border-outline-variant/30 flex items-center gap-1 hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-[14px]">add</span> Add More
+                    </button>
+</div>
+</section>
+<!-- Transition Divider -->
+<div class="relative py-12 flex items-center justify-center">
+<div aria-hidden="true" class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/15"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="bg-surface px-6 py-2 text-sm font-bold tracking-wide uppercase text-primary font-headline flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">storefront</span>
+                        Now, tell us about your gym
+                    </span>
+</div>
+</div>
+<!-- Implied below the fold space -->
+<div class="h-20 bg-gradient-to-b from-surface to-transparent opacity-50"></div>
+</div>
+</main>
+<!-- Sticky Footer / BottomNavBar Area used for CTA -->
+<div class="fixed bottom-0 left-0 w-full bg-[#111125]/80 backdrop-blur-xl z-50 rounded-t-none px-4 py-4 pb-8 shadow-[0_-4px_20px_rgba(0,0,0,0.4)] border-t border-[#1e1e32]/20">
+<div class="max-w-2xl mx-auto">
+<button class="w-full bg-primary-container text-on-primary-container font-headline font-bold text-lg rounded-xl py-4 flex items-center justify-center gap-2 shadow-[0_8px_32px_rgba(255,86,55,0.2)] hover:bg-[#ffb4a5] transition-colors">
+                Save &amp; Set Up My Gym
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>
