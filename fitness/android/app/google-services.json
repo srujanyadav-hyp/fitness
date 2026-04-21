@@ -12,7 +12,20 @@
           "package_name": "com.example.fitness"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "773562056780-u18h11mqsvo7dk1eqvcfa5fnfnse16o5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitness",
+            "certificate_hash": "c2ae30a013d5ebee46fe1df177ae777c86ba5550"
+          }
+        },
+        {
+          "client_id": "773562056780-283f6e959mlltlco3pcurpkgn3qfq18j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAU5RqCI_zeHS7DDf-WqX2C5Q6pXmm-4zA"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773562056780-283f6e959mlltlco3pcurpkgn3qfq18j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "773562056780-otf76lb23gdtt6ebs4a5e3begmcr84f1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fitness"
+              }
+            }
+          ]
         }
       }
     }

@@ -69,8 +69,12 @@ class _OtpBodyState extends State<_OtpBody> {
 
   @override
   void dispose() {
-    for (final c in _ctrls) c.dispose();
-    for (final f in _foci) f.dispose();
+    for (final c in _ctrls) {
+      c.dispose();
+    }
+    for (final f in _foci) {
+      f.dispose();
+    }
     _timer?.cancel();
     super.dispose();
   }
@@ -160,9 +164,9 @@ class _OtpBodyState extends State<_OtpBody> {
                     _ResendRow(
                       secondsLeft: _secondsLeft,
                       onResend: () {
-                        context
-                            .read<AuthCubit>()
-                            .sendOtp(widget.phone.replaceAll(RegExp(r'\D'), '').substring(2));
+                        context.read<AuthCubit>().sendOtp(widget.phone
+                            .replaceAll(RegExp(r'\D'), '')
+                            .substring(2));
                         _startTimer();
                       },
                     ),
@@ -203,8 +207,7 @@ class _AppBar extends StatelessWidget {
               context.read<AuthCubit>().reset();
               Navigator.of(context).maybePop();
             },
-            icon: Icon(Icons.arrow_back_rounded,
-                color: AppColors.onSurface),
+            icon: Icon(Icons.arrow_back_rounded, color: AppColors.onSurface),
           ),
         ],
       ),
@@ -245,8 +248,7 @@ class _PhoneSubtitle extends StatelessWidget {
             context.read<AuthCubit>().reset();
             Navigator.of(context).maybePop();
           },
-          child: Icon(Icons.edit_rounded,
-              color: AppColors.primary, size: 18),
+          child: Icon(Icons.edit_rounded, color: AppColors.primary, size: 18),
         ),
       ],
     );
@@ -266,7 +268,8 @@ class _OtpBoxRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: List.generate(4, (i) => _OtpBox(ctrl: ctrls[i], focus: foci[i])),
+      children:
+          List.generate(4, (i) => _OtpBox(ctrl: ctrls[i], focus: foci[i])),
     );
   }
 }
@@ -289,7 +292,9 @@ class _OtpBoxState extends State<_OtpBox> {
     widget.focus.addListener(() {
       if (mounted) setState(() => _focused = widget.focus.hasFocus);
     });
-    widget.ctrl.addListener(() { if (mounted) setState(() {}); });
+    widget.ctrl.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -305,9 +310,7 @@ class _OtpBoxState extends State<_OtpBox> {
             : AppColors.surfaceContainer,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: _focused
-              ? AppColors.primary
-              : Colors.transparent,
+          color: _focused ? AppColors.primary : Colors.transparent,
           width: 2,
         ),
         boxShadow: _focused
@@ -353,9 +356,7 @@ class _ResendRow extends StatelessWidget {
                 ? 'Resend Code'
                 : 'Resend in ${secondsLeft.toString().padLeft(2, '0')}s',
             style: GoogleFonts.manrope(
-              color: canResend
-                  ? AppColors.primary
-                  : AppColors.onSurface,
+              color: canResend ? AppColors.primary : AppColors.onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -462,7 +463,9 @@ class _NumericKeypad extends StatelessWidget {
         crossAxisSpacing: 16,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          ...'123456789'.split('').map((d) => _Key(label: d, onTap: () => onDigit(d))),
+          ...'123456789'
+              .split('')
+              .map((d) => _Key(label: d, onTap: () => onDigit(d))),
           const SizedBox.shrink(), // empty cell
           _Key(label: '0', onTap: () => onDigit('0')),
           _BackspaceKey(onTap: onBackspace),
